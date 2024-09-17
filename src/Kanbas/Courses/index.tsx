@@ -4,6 +4,8 @@ import Modules from "./Modules";
 import Home from "./Home";
 import Assignments from "./Assignments";
 import AssignmentEditor from "./Assignments/Editor";
+import Quizzes from "./Quizzes";
+import QuizzesEditor from "./Quizzes/Editor";
 
 export default function Courses() {
     return (
@@ -22,6 +24,8 @@ export default function Courses() {
                             <Route path="Modules" element={<Modules />} />
                             <Route path="Assignments" element={<Assignments />} />
                             <Route path="Assignments/:aid" element={<AssignmentEditor />} />
+                            <Route path="Quizzes" element={<Quizzes/>} />
+                            <Route path="Quizzes/:qid" element={<QuizzesEditor/>} />
                             <Route path="People" element={<h2>People</h2>} />
                         </Routes>
                     </td>
