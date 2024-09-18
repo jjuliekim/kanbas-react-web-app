@@ -7,7 +7,7 @@ export default function Lab2() {
         Style attribute allows configuring look and feel
         right on the element. Although it's very convenient
         it is considered bad practice and you should avoid
-        using the style attribute
+        using the style attribute.
       </p>
     </div>
   );
