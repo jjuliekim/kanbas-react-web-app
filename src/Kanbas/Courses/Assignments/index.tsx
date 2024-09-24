@@ -1,31 +1,46 @@
+import AssignmentHeaderButtons from "./AssignmentHeaderButtons";
+import LessonControlButtons from "../Modules/LessonControlButtons";
+import AssignmentsControl from "./AssignmentsControl";
+import BSGripVertical from "../Modules/BsGripVertical";
+import { BsGripVertical } from "react-icons/bs";
+import { VscNotebook } from "react-icons/vsc";
+import { IoIosSearch } from "react-icons/io";
+
 export default function Assignments() {
     return (
-        <div id="wd-assignments">
-            <input id="wd-search-assignment"
-                placeholder="Search for Assignments" />
-            <button id="wd-add-assignment-group">+ Group</button>
-            <button id="wd-add-assignment">+ Assignment</button>
-            <h3 id="wd-assignments-title">
-                ASSIGNMENTS 40% of Total <button>+</button>
-            </h3>
-            <ul id="wd-assignment-list">
-                <li className="wd-assignment-list-item">
-                    <a className="wd-assignment-link"
-                        href="#/Kanbas/Courses/1234/Assignments/123">
-                        A1 - ENV + HTML
-                    </a>
-                </li>
-                <li className="wd-assignment-list-item">
-                    <a className="wd-assignment-link"
-                        href="#/Kanbas/Courses/1234/Assignments/124">
-                        A2 - CSS + BOOTSTRAP
-                    </a>
-                </li>
-                <li className="wd-assignment-list-item">
-                    <a className="wd-assignment-link"
-                        href="#/Kanbas/Courses/1234/Assignments/125">
-                        A2 - JAVASCRIPT + REACT
-                    </a>
+        <div>
+            <div>
+                <input id="wd-search-assignment" 
+                    placeholder="Search for Assignments"/>
+                <AssignmentsControl /> <br /><br /><br /><br />
+            </div>
+            <ul id="wd-assignments" className="list-group rounded-0">
+                <li className="wd-assignment-group list-group-item p-0 mb-5 fs-5 border-gray">
+                    <div className="wd-title p-3 ps-2 bg-secondary">
+                        <BSGripVertical />
+                        ASSIGNMENTS 40% of Total
+                        <AssignmentHeaderButtons />
+                    </div>
+                    <ul className="wd-lessons list-group rounded-0">
+                        <li className="wd-lesson list-group-item p-3 ps-1">
+                            <BsGripVertical />
+                            <VscNotebook />
+                            A1
+                            <LessonControlButtons />
+                        </li>
+                        <li className="wd-lesson list-group-item p-3 ps-1">
+                            <BsGripVertical />
+                            <VscNotebook />
+                            A2 
+                            <LessonControlButtons />
+                        </li>
+                        <li className="wd-lesson list-group-item p-3 ps-1">
+                            <BsGripVertical />
+                            <VscNotebook />
+                            A3
+                            <LessonControlButtons />
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </div>
