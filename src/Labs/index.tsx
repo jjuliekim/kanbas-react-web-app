@@ -8,6 +8,7 @@ export default function Labs() {
     return (
         <div id="wd-labs">
             <h1>Julie Kim</h1>
+            <h3>CS 4550 - Section 1</h3>
             <h1>Labs</h1>
             {/* <a href="https://github.com/jjuliekim/kanbas-react-web-app.git" id="wd-github" target="_blank" rel="noreferrer" >Github Repository</a> */}
             <TOC />
