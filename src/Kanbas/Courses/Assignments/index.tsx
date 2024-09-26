@@ -4,7 +4,7 @@ import AssignmentsControl from "./AssignmentsControl";
 import BSGripVertical from "../Modules/BsGripVertical";
 import { BsGripVertical } from "react-icons/bs";
 import { VscNotebook } from "react-icons/vsc";
-import { IoIosSearch } from "react-icons/io";
+// import { IoIosSearch } from "react-icons/io";
 
 export default function Assignments() {
     return (
