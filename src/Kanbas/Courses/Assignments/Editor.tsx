@@ -83,21 +83,26 @@ export default function AssignmentEditor() {
                         <label htmlFor="wd-due-date" className="form-label">Due</label>
                         <input type="date" id="wd-due-date" className="form-control" value="2024-05-13" />
                     </div>
-                    <div className="mb-3">
-                        <label htmlFor="wd-available-from" className="form-label">Available from</label>
-                        <input type="date" id="wd-available-from" className="form-control" value="2024-05-06" />
-                    </div>
-                    <div>
-                        <label htmlFor="wd-available-until" className="form-label">Until</label>
-                        <input type="date" id="wd-available-until" className="form-control" value="2024-05-20" />
+                    <div className="row mb-3">
+                        <div className="col">
+                            <label htmlFor="wd-available-from" className="form-label">Available from</label>
+                            <input type="date" id="wd-available-from" className="form-control" value="2024-05-06" />
+                        </div>
+                        <div className="col">
+                            <label htmlFor="wd-available-until" className="form-label">Until</label>
+                            <input type="date" id="wd-available-until" className="form-control" value="2024-05-20" />
+                        </div>
                     </div>
                 </div>
             </div>
             <hr className="mt-5"></hr>
-            <div className="col mb-3 float-end">
-                <div className="btn btn-secondary me-2">Cancel</div>
-                <div className="btn btn-danger">Save</div>
+            <div className="row mb-3 float-end">
+                <div className="col mb-3">
+                    <div className="btn btn-secondary me-2">Cancel</div>
+                    <div className="btn btn-danger">Save</div>
+                </div>
             </div>
+
         </div>
     );
 }
