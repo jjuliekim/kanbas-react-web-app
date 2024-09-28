@@ -11,17 +11,10 @@ export default function Assignments() {
         <div>
             <div className="row mb-3 align-items-center">
                 <div className="col-auto">
-                    {/* <input id="wd-search-assignment" className="form-control"
-                        placeholder="Search for Assignments" style={{ width: "300px" }} /> */}
-                    <div className="input-group">
-                        <span className="input-group-text">
-                            <IoIosSearch />
-                        </span>
-                        <input
-                            id="wd-search-assignment"
-                            className="form-control"
-                            placeholder="Search for Assignments"
-                        />
+                    <div className="input-group d-flex align-items-center">
+                        <IoIosSearch className="me-2" />
+                        <input id="wd-search-assignment" className="form-control"
+                            placeholder="Search for Assignments" />
                     </div>
                 </div>
                 <div className="col-auto ms-auto">
@@ -30,29 +23,59 @@ export default function Assignments() {
             </div>
             <ul id="wd-assignments" className="list-group rounded-0">
                 <li className="wd-assignment-group list-group-item p-0 mb-5 fs-5 border-gray">
-                    <div className="wd-title p-3 ps-2 bg-secondary">
+                    <div className="wd-title p-3 ps-2 bg-secondary align-items-center">
                         <BSGripVertical />
                         ASSIGNMENTS
                         <AssignmentHeaderButtons />
                     </div>
                     <ul className="wd-lessons list-group rounded-0">
-                        <li className="wd-lesson list-group-item p-3 ps-1">
+                        <li className="wd-lesson list-group-item p-3 ps-1 d-flex align-items-center">
                             <BsGripVertical />
-                            <VscNotebook color="green" />
-                            A1
-                            <LessonControlButtons />
+                            <VscNotebook color="green" className="me-3" />
+                            <div className="me-5">
+                                <a className="wd-assignment-link text-dark text-decoration-none"
+                                    href="#/Kanbas/Courses/1234/Assignments/123">
+                                    A1
+                                </a>
+                                <div className="text-muted small">
+                                    <strong>Not available until</strong> May 6 at 12:00am | <strong>Due</strong> May 13 at 11:59pm | 100 pts
+                                </div>
+                            </div>
+                            <div className="ms-auto">
+                                <LessonControlButtons />
+                            </div>
                         </li>
-                        <li className="wd-lesson list-group-item p-3 ps-1">
+                        <li className="wd-lesson list-group-item p-3 ps-1 d-flex align-items-center">
                             <BsGripVertical />
-                            <VscNotebook color="green" />
-                            A2
-                            <LessonControlButtons />
+                            <VscNotebook color="green" className="me-3" />
+                            <div className="me-5">
+                                <a className="wd-assignment-link text-dark text-decoration-none"
+                                    href="#/Kanbas/Courses/1234/Assignments/123">
+                                    A2
+                                </a>
+                                <div className="text-muted small">
+                                    <strong>Not available until</strong> May 14 at 12:00am | <strong>Due</strong> May 21 at 11:59pm | 100 pts
+                                </div>
+                            </div>
+                            <div className="ms-auto">
+                                <LessonControlButtons />
+                            </div>
                         </li>
-                        <li className="wd-lesson list-group-item p-3 ps-1">
+                        <li className="wd-lesson list-group-item p-3 ps-1 d-flex align-items-center">
                             <BsGripVertical />
-                            <VscNotebook color="green" />
-                            A3
-                            <LessonControlButtons />
+                            <VscNotebook color="green" className="me-3" />
+                            <div className="me-5">
+                                <a className="wd-assignment-link text-dark text-decoration-none"
+                                    href="#/Kanbas/Courses/1234/Assignments/123">
+                                    A3
+                                </a>
+                                <div className="text-muted small">
+                                    <strong>Not available until</strong> May 22 at 12:00am | <strong>Due</strong> May 29 at 11:59pm | 100 pts
+                                </div>
+                            </div>
+                            <div className="ms-auto">
+                                <LessonControlButtons />
+                            </div>
                         </li>
                     </ul>
                 </li>
