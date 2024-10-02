@@ -14,7 +14,7 @@ export default function Assignments() {
                     <div className="input-group d-flex align-items-center">
                         <IoIosSearch className="me-2" />
                         <input id="wd-search-assignment" className="form-control"
-                            placeholder="Search for Assignments" />
+                            placeholder="Search for Assignment" />
                     </div>
                 </div>
                 <div className="col-auto ms-auto">
