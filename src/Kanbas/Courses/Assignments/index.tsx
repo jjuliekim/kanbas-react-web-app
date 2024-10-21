@@ -63,16 +63,17 @@ export default function Assignments() {
                         {assignment.title}
                       </a>
                       <div className="text-muted small">
-                        <strong>Not available until</strong> {formattedAvailableFromDate} | <strong>Due</strong> {formattedDueDate} | {assignment.points} pts
+                        <strong>Not available until</strong> {formattedAvailableFromDate} | 
+                        <strong> Due</strong> {formattedDueDate} | {assignment.points} pts
                       </div>
-                      {/* Not available until May 6 at 12:00am | Due May 13 at 11:59pm | 100 pts */}
                     </div>
                     <div className="ms-auto">
                       <LessonControlButtons />
                     </div>
                   </li>
                 );
-              })}
+              })
+            }
           </ul>
         </li>
       </ul>

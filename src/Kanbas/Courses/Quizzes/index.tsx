@@ -36,25 +36,43 @@ export default function Quizzes() {
           <ul className="wd-quiz-list list-group rounded-0">
             {quizzes
               .filter((quiz: any) => quiz.course === cid)
-              .map((quiz: any) => (
-                <li className="wd-quiz list-group-item p-3 ps-1 d-flex align-items-center">
-                  <MdOutlineRocketLaunch color="green" className="me-3 ms-2" />
-                  <div className="me-5">
-                    <a className="wd-quiz-link text-dark text-decoration-none"
-                      href={`#/Kanbas/Courses/${cid}/Quizzes/${quiz._id}`}>
-                      {quiz.title}
-                    </a>
-                    <div className="text-muted small">
-                      <strong>Not available until</strong> May 6 at 12:00am |
-                      <strong> Due</strong> May 13 at 11:59pm | 100 pts | 10 Questions
+              .map((quiz: any) => {
+                const dueDate = new Date(quiz.dueDate);
+                const availableDate = new Date(quiz.availableFrom);
+                const formattedAvailableFromDate = availableDate.toLocaleString('en-US', {
+                  month: 'long',
+                  day: 'numeric',
+                  hour: 'numeric',
+                  minute: 'numeric',
+                  hour12: true,
+                });
+                const formattedDueDate = dueDate.toLocaleString('en-US', {
+                  month: 'long',
+                  day: 'numeric',
+                  hour: 'numeric',
+                  minute: 'numeric',
+                  hour12: true,
+                });
+                return (
+                  <li className="wd-quiz list-group-item p-3 ps-1 d-flex align-items-center">
+                    <MdOutlineRocketLaunch color="green" className="me-3 ms-2" />
+                    <div className="me-5">
+                      <a className="wd-quiz-link text-dark text-decoration-none"
+                        href={`#/Kanbas/Courses/${cid}/Quizzes/${quiz._id}`}>
+                        {quiz.title}
+                      </a>
+                      <div className="text-muted small">
+                        <strong>Not available until</strong> {formattedAvailableFromDate} |
+                        <strong> Due</strong> {formattedDueDate} | {quiz.points} pts | {quiz.numQuestions} Questions
+                      </div>
                     </div>
-                  </div>
-                  <div className="ms-auto">
-                    <GreenCheckmark />
-                    <IoEllipsisVertical />
-                  </div>
-                </li>
-              ))
+                    <div className="ms-auto">
+                      <GreenCheckmark />
+                      <IoEllipsisVertical />
+                    </div>
+                  </li>
+                );
+              })
             }
           </ul>
           <a className="wd-quiz-link"
