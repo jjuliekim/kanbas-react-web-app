@@ -12,7 +12,7 @@ export default function AssignmentEditor() {
                 <input id="wd-name" className="form-control" value={assignment && assignment.title} />
             </div>
             <textarea id="wd-description" className="form-control mt-3 mb-3">
-                The assignment is available online. Submit a link to the landing page of your Web application running on Netlify.
+              {assignment?.description}
             </textarea>
 
             <div className="row mb-3">
@@ -87,16 +87,16 @@ export default function AssignmentEditor() {
                     </div>
                     <div className="mb-3">
                         <label htmlFor="wd-due-date" className="form-label">Due</label>
-                        <input type="date" id="wd-due-date" className="form-control" value="2024-05-13" />
+                        <input type="datetime-local" id="wd-due-date" className="form-control" value={assignment?.dueDate} />
                     </div>
                     <div className="row mb-3">
                         <div className="col">
                             <label htmlFor="wd-available-from" className="form-label">Available from</label>
-                            <input type="date" id="wd-available-from" className="form-control" value="2024-05-06" />
+                            <input type="datetime-local" id="wd-available-from" className="form-control" value={assignment?.availableFrom} />
                         </div>
                         <div className="col">
                             <label htmlFor="wd-available-until" className="form-label">Until</label>
-                            <input type="date" id="wd-available-until" className="form-control" value="2024-05-20" />
+                            <input type="datetime-local" id="wd-available-until" className="form-control" value={assignment?.untilDate} />
                         </div>
                     </div>
                 </div>
