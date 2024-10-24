@@ -1,4 +1,3 @@
-import { BsGripVertical } from "react-icons/bs";
 import { FaPlus } from "react-icons/fa6";
 import { IoIosSearch } from "react-icons/io";
 import { IoEllipsisVertical } from "react-icons/io5";

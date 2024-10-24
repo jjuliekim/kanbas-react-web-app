@@ -1,8 +1,8 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { quizzes } from "../../Database";
 
 export default function QuizzesEditor() {
-  const { cid, qid } = useParams();
+  const { qid } = useParams();
   const quiz = quizzes.find((quiz) => quiz._id === qid);
 
   return (
