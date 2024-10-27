@@ -6,7 +6,7 @@ export default function Home() {
       <div className="flex-fill">
         <Modules />
       </div>
-      <div className="d-none d-md-block">
+      <div className="ms-3 d-none d-lg-block">
         <CourseStatus />
       </div>
     </div>
