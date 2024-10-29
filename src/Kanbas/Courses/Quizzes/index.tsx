@@ -5,27 +5,31 @@ import GreenCheckmark from "../Modules/GreenCheckmark";
 import { useParams } from "react-router";
 import * as db from "../../Database";
 import { MdOutlineRocketLaunch } from "react-icons/md";
+import { useSelector } from "react-redux";
 
 export default function Quizzes() {
   const { cid } = useParams();
   const quizzes = db.quizzes;
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
 
   return (
     <div>
       <div className="row mb-3 align-items-center">
         <div className="col-auto">
-          <div className="input-group d-flex align-items-center">
+          <div className="d-flex align-items-center">
             <IoIosSearch className="me-2" />
             <input id="wd-search-quiz" className="form-control"
               placeholder="Search for Quiz" />
           </div>
         </div>
-        <div className="col-auto ms-auto">
-          <button id="wd-add-quiz" className="btn btn-lg btn-danger me-1 float-end">
-            <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
-            Quiz
-          </button>
-        </div>
+        {currentUser.role === "FACULTY" && (
+          <div className="col-auto ms-auto">
+            <button id="wd-add-quiz" className="btn btn-lg btn-danger me-1 float-end">
+              <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
+              Quiz
+            </button>
+          </div>
+        )}
       </div>
       <ul id="wd-quizzes" className="list-group rounded-0">
         <li className="wd-quiz-group list-group-item p-0 mb-5 fs-5 border-gray">
@@ -65,10 +69,12 @@ export default function Quizzes() {
                         <strong> Due</strong> {formattedDueDate} | {quiz.points} pts | {quiz.numQuestions} Questions
                       </div>
                     </div>
-                    <div className="ms-auto">
-                      <GreenCheckmark />
-                      <IoEllipsisVertical />
-                    </div>
+                    {currentUser.role === "FACULTY" && (
+                      <div className="ms-auto">
+                        <GreenCheckmark />
+                        <IoEllipsisVertical />
+                      </div>
+                    )}
                   </li>
                 );
               })

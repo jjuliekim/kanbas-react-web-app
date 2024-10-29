@@ -7,31 +7,35 @@ import { VscNotebook } from "react-icons/vsc";
 import { IoIosSearch } from "react-icons/io";
 import { useParams } from "react-router";
 import * as db from "../../Database";
+import { useSelector } from "react-redux";
 
 export default function Assignments() {
   const { cid } = useParams();
   const assignments = db.assignments;
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
 
   return (
     <div>
       <div className="row mb-3 align-items-center">
         <div className="col-auto">
-          <div className="input-group d-flex align-items-center">
+          <div className="d-flex align-items-center">
             <IoIosSearch className="me-2" />
             <input id="wd-search-assignment" className="form-control"
               placeholder="Search for Assignment" />
           </div>
         </div>
-        <div className="col-auto ms-auto">
-          <AssignmentsControl />
-        </div>
+        {currentUser.role === "FACULTY" && (
+          <div className="col-auto ms-auto">
+            <AssignmentsControl />
+          </div>
+        )}
       </div>
       <ul id="wd-assignments" className="list-group rounded-0">
         <li className="wd-assignment-group list-group-item p-0 mb-5 fs-5 border-gray">
           <div className="wd-title p-3 ps-2 bg-secondary align-items-center">
-            <BSGripVertical />
+            {currentUser.role === "FACULTY" && <BSGripVertical />}
             ASSIGNMENTS
-            <AssignmentHeaderButtons />
+            {currentUser.role === "FACULTY" && (<AssignmentHeaderButtons />)}
           </div>
           <ul className="wd-lessons list-group rounded-0">
             {assignments
@@ -55,7 +59,7 @@ export default function Assignments() {
                 });
                 return (
                   <li className="wd-lesson list-group-item p-3 ps-1 d-flex align-items-center">
-                    <BsGripVertical />
+                    {currentUser.role === "FACUTLY" && <BsGripVertical />}
                     <VscNotebook color="green" className="me-3" />
                     <div className="me-5">
                       <a className="wd-assignment-link text-dark text-decoration-none"
@@ -63,13 +67,15 @@ export default function Assignments() {
                         {assignment.title}
                       </a>
                       <div className="text-muted small">
-                        <strong>Not available until</strong> {formattedAvailableFromDate} | 
+                        <strong>Not available until</strong> {formattedAvailableFromDate} |
                         <strong> Due</strong> {formattedDueDate} | {assignment.points} pts
                       </div>
                     </div>
-                    <div className="ms-auto">
-                      <LessonControlButtons />
-                    </div>
+                    {currentUser.role === "FACULTY" && (
+                      <div className="ms-auto">
+                        <LessonControlButtons />
+                      </div>
+                    )}
                   </li>
                 );
               })
