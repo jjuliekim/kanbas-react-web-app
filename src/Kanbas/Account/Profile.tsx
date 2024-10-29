@@ -14,7 +14,8 @@ export default function Profile() {
         <option value="ADMIN">Admin</option>
         <option value="FACULTY">Faculty</option>
         <option value="STUDENT">Student</option>
-      </select><br/>
+      </select><br />
       <Link to="/Kanbas/Account/Signin" className="btn btn-danger w-100">Sign out</Link>
     </div>
-);}
+  );
+}
