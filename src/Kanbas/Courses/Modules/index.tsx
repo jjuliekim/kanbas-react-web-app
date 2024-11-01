@@ -3,7 +3,6 @@ import ModulesControls from "./ModulesControls";
 import ModuleControlButtons from "./ModuleControlButtons";
 import BsGripVertical from "./BsGripVertical";
 import { useParams } from "react-router";
-import * as db from "../../Database";
 import React, { useState } from "react";
 import { addModule, editModule, updateModule, deleteModule }
   from "./reducer";
