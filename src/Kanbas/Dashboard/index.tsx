@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import * as db from "../Database";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { enroll, unenroll } from "./reducer";
 
 export default function Dashboard({
   courses, course, setCourse, addNewCourse, deleteCourse, updateCourse }: {
@@ -11,7 +11,16 @@ export default function Dashboard({
   }) {
 
   const { currentUser } = useSelector((state: any) => state.accountReducer);
-  const { enrollments } = db;
+  const enrollments = useSelector((state: any) => state.enrollmentsReducer.enrollments);
+  const [showAllCourses, setShowAllCourses] = useState(false);
+  const dispatch = useDispatch();
+
+  const isEnrolled = (courseId: string) => {
+    return enrollments.some(
+      (enrollment: { user: any; course: string; }) =>
+        enrollment.user === currentUser._id && enrollment.course === courseId
+    );
+  };
 
   return (
     <div id="wd-dashboard">
@@ -33,16 +42,16 @@ export default function Dashboard({
         </div>
       )}
 
-      <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2> <hr />
+      <div className="d-flex justify-content-between">
+        <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2>
+        <button className="btn btn-primary" id="wd-dashboard-enrollments"
+          onClick={() => setShowAllCourses(!showAllCourses)}>Enrollments</button>
+      </div>
+      <hr />
       <div id="wd-dashboard-courses" className="row">
         <div className="row row-cols-1 row-cols-md-5 g-4">
           {courses
-            .filter((course) =>
-              enrollments.some(
-                (enrollment) =>
-                  enrollment.user === currentUser._id &&
-                  enrollment.course === course._id
-              ))
+            .filter((course) => showAllCourses || isEnrolled(course._id))
             .map((course) => (
               <div key={course._id} className="col" style={{ width: "300px" }}>
                 <div className="card rounded-3 overflow-hidden">
@@ -58,6 +67,20 @@ export default function Dashboard({
                         {course.description}
                       </p>
                       <button className="btn btn-primary"> Go </button>
+                      {currentUser.role === "STUDENT" && (
+                        <button
+                          className={`btn  float-end ${isEnrolled(course._id) ? "btn-danger" : "btn-success"}`}
+                          onClick={() => {
+                            if (isEnrolled(course._id)) {
+                              dispatch(unenroll({ user: currentUser._id, course: course._id }));
+                            } else {
+                              dispatch(enroll({ user: currentUser._id, course: course._id }));
+                            }
+                          }}
+                        >
+                          {isEnrolled(course._id) ? "Unenroll" : "Enroll"}
+                        </button>
+                      )}
                       {currentUser.role === "FACULTY" && (
                         <>
                           <button onClick={(event) => {
