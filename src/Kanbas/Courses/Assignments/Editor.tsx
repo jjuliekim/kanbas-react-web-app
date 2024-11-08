@@ -1,12 +1,18 @@
+import { useParams, Link } from "react-router-dom";
+import { assignments } from "../../Database";
+
 export default function AssignmentEditor() {
+    const { cid, aid } = useParams();
+    const assignment = assignments.find((assignment) => assignment._id === aid);
+
     return (
         <div id="wd-assignments-editor" className="container">
             <div>
                 <label htmlFor="wd-name">Assignment Name</label>
-                <input id="wd-name" className="form-control" value="A1 - ENV + HTML" />
+                <input id="wd-name" className="form-control" value={assignment && assignment.title} />
             </div>
             <textarea id="wd-description" className="form-control mt-3 mb-3">
-                The assignment is available online. Submit a link to the landing page of your Web application running on Netlify.
+              {assignment?.description}
             </textarea>
 
             <div className="row mb-3">
@@ -81,16 +87,16 @@ export default function AssignmentEditor() {
                     </div>
                     <div className="mb-3">
                         <label htmlFor="wd-due-date" className="form-label">Due</label>
-                        <input type="date" id="wd-due-date" className="form-control" value="2024-05-13" />
+                        <input type="datetime-local" id="wd-due-date" className="form-control" value={assignment?.dueDate} />
                     </div>
                     <div className="row mb-3">
                         <div className="col">
                             <label htmlFor="wd-available-from" className="form-label">Available from</label>
-                            <input type="date" id="wd-available-from" className="form-control" value="2024-05-06" />
+                            <input type="datetime-local" id="wd-available-from" className="form-control" value={assignment?.availableFrom} />
                         </div>
                         <div className="col">
                             <label htmlFor="wd-available-until" className="form-label">Until</label>
-                            <input type="date" id="wd-available-until" className="form-control" value="2024-05-20" />
+                            <input type="datetime-local" id="wd-available-until" className="form-control" value={assignment?.untilDate} />
                         </div>
                     </div>
                 </div>
@@ -98,8 +104,8 @@ export default function AssignmentEditor() {
             <hr className="mt-5"></hr>
             <div className="row mb-3 float-end">
                 <div className="col mb-3">
-                    <div className="btn btn-secondary me-2">Cancel</div>
-                    <div className="btn btn-danger">Save</div>
+                    <Link to={`/Kanbas/Courses/${cid}/Assignments/`} className="btn btn-secondary me-2">Cancel</Link>
+                    <Link to={`/Kanbas/Courses/${cid}/Assignments/`} className="btn btn-danger me-2">Save</Link>
                 </div>
             </div>
 

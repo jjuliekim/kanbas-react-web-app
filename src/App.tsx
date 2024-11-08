@@ -14,4 +14,3 @@ export default function App() {
     </HashRouter>
   );
 }
-// export default App;

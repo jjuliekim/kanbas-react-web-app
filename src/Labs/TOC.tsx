@@ -4,7 +4,7 @@ import { useLocation } from "react-router";
 export default function TOC() {
   const { pathname } = useLocation();
   return (
-    <ul className="nav nav-pills">
+    <ul className="nav nav-pills" id="wd-toc">
       <li className="nav-item">
         <a id="wd-a" href="#/Labs" className="nav-link">
           Labs
