@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { useLocation } from "react-router";
 
 export default function TOC() {
@@ -26,6 +25,12 @@ export default function TOC() {
         <a id="wd-a3" href="#/Labs/Lab3"
           className={`nav-link ${pathname.includes("Lab3") ? "active" : ""}`}>
           Lab 3
+        </a>
+      </li>
+      <li className="nav-item">
+        <a id="wd-a4" href="#/Labs/Lab4"
+          className={`nav-link ${pathname.includes("Lab4") ? "active" : ""}`}>
+          Lab 4
         </a>
       </li>
       <li className="nav-item">
