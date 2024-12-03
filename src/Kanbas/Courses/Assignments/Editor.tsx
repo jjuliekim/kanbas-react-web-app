@@ -15,14 +15,13 @@ export default function AssignmentEditor() {
     if (!cid) return;
     const newAssignment = {
       title: (document.getElementById("wd-name") as HTMLInputElement)?.value,
-      course: cid,
+      // course: cid,
       description: (document.getElementById("wd-description") as HTMLInputElement)?.value,
       dueDate: (document.getElementById("wd-due-date") as HTMLInputElement)?.value,
       availableFrom: (document.getElementById("wd-available-from") as HTMLInputElement)?.value,
       untilDate: (document.getElementById("wd-available-until") as HTMLInputElement)?.value,
       points: (document.getElementById("wd-points") as HTMLInputElement)?.value
     };
-    console.log('creating assignment', newAssignment, cid);
     const assignment = await coursesClient.createAssignmentForCourse(cid, newAssignment);
     dispatch(addAssignment(assignment));
   };
@@ -31,7 +30,7 @@ export default function AssignmentEditor() {
     const assignment = {
       _id: aid || new Date().getTime().toString(),
       title: (document.getElementById("wd-name") as HTMLInputElement)?.value,
-      course: cid,
+      // course: cid,
       description: (document.getElementById("wd-description") as HTMLInputElement)?.value,
       dueDate: (document.getElementById("wd-due-date") as HTMLInputElement)?.value,
       availableFrom: (document.getElementById("wd-available-from") as HTMLInputElement)?.value,
