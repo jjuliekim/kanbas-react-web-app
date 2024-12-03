@@ -14,9 +14,6 @@ import AssignmentsControl from "./AssignmentsControl";
 import * as coursesClient from "../client";
 import * as assignmentsClient from "./client";
 
-// refactor to use client file to create, retrieve, update, and delete assignments
-// changes should persist even if screen is refreshed
-
 export default function Assignments() {
   const dispatch = useDispatch();
   const { cid } = useParams();

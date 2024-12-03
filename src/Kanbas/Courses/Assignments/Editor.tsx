@@ -4,9 +4,6 @@ import { useSelector, useDispatch } from "react-redux";
 import * as coursesClient from "../client";
 import * as assignmentsClient from "./client";
 
-// refactor to use client file to create, retrieve, update, and delete assignments
-// changes should persist even if screen is refreshed
-
 export default function AssignmentEditor() {
   const { cid, aid } = useParams();
   const assignment = useSelector((state: any) =>
@@ -25,6 +22,7 @@ export default function AssignmentEditor() {
       untilDate: (document.getElementById("wd-available-until") as HTMLInputElement)?.value,
       points: (document.getElementById("wd-points") as HTMLInputElement)?.value
     };
+    console.log('creating assignment', newAssignment, cid);
     const assignment = await coursesClient.createAssignmentForCourse(cid, newAssignment);
     dispatch(addAssignment(assignment));
   };
