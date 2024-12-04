@@ -1,53 +1,67 @@
 import { useParams, useNavigate } from "react-router-dom";
 import * as quizzesClient from "./client";
 import * as coursesClient from "../client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function QuizzesEditor() {
   const navigate = useNavigate();
   const { cid, qid } = useParams();
-  const [quiz, setQuiz] = useState(() => {
-    if (qid === "new") {
-      return {
-        title: "",
-        description: "",
-        type: "graded-quiz",
-        points: 0,
-        group: "quizzes",
-        dueDate: "",
-        availableFrom: "",
-        availableUntil: "",
-        shuffleAnswers: true,
-        multipleAttempts: false,
-        attemptsAllowed: 1,
-        showAnswers: "never",
-        accessCode: "",
-        oneQuestionAtATime: true,
-        webcamRequired: false,
-        lockQuestions: false,
-      };
-    }
-    return quizzes.find((quiz) => quiz._id === qid) || {};
-  });
+  const [quiz, setQuiz] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchQuiz = async () => {
+      if (qid === "new") {
+        setQuiz({
+          title: "",
+          description: "",
+          quizType: "graded-quiz",
+          points: 100,
+          assignmentGroup: "quizzes",
+          shuffleAnswers: true,
+          timeLimit: 20,
+          dueDate: "",
+          availableFrom: "",
+          availableUntil: "",
+          multipleAttempts: false,
+          attemptsAllowed: 1,
+          showAnswers: "never",
+          accessCode: "",
+          oneQuestionAtATime: true,
+          webcamRequired: false,
+          lockQuestions: false,
+        });
+      } else {
+        const quizzes = await coursesClient.findQuizzesForCourse(cid as string);
+        const foundQuiz = quizzes.find((quiz: any) => quiz._id === qid);
+        setQuiz(foundQuiz);
+      }
+    };
+    fetchQuiz();
+  }, [cid, qid]);
 
   const handleSave = async () => {
+    const quizData = { ...quiz, };
     if (qid === "new") {
-      const newQuiz = await coursesClient.createQuizForCourse(cid, quiz);
-      navigate(`/Kanbas/Courses/${cid}/Quizzes`);
+      await coursesClient.createQuizForCourse(cid as string, quizData);
     } else {
-      await quizzesClient.updateQuiz(quiz);
-      navigate(`/Kanbas/Courses/${cid}/Quizzes`);
+      await quizzesClient.updateQuiz({ ...quizData, _id: qid });
     }
+    navigate(`/Kanbas/Courses/${cid}/Quizzes`);
+  };
+
+  const handleInputChange = (field: string, value: any) => {
+    setQuiz(() => ({ ...quiz, [field]: value }));
+  }
 
   return (
     <div id="wd-quizzes-editor" className="container">
       <div>
         <label htmlFor="wd-name">Quiz Name</label>
-        <input id="wd-name" className="form-control" placeholder="Name" value={quiz?.title} />
+        <input id="wd-name" className="form-control" placeholder="Name"
+          value={quiz?.title} onChange={(e) => handleInputChange("title", e.target.value)} />
       </div>
-      <textarea id="wd-description" className="form-control mt-3 mb-3" placeholder="Description">
-        {quiz?.description}
-      </textarea>
+      <textarea id="wd-description" className="form-control mt-3 mb-3"
+        placeholder="Description" value={quiz?.description} onChange={(e) => handleInputChange("description", e.target.value)} />
       <br />
       <table>
         <tr>
@@ -55,7 +69,7 @@ export default function QuizzesEditor() {
             <label htmlFor="wd-quiz-type">Quiz Type</label>
           </td>
           <td>
-            <select id="wd-quiz-type">
+            <select id="wd-quiz-type" value={quiz?.quizType} onChange={(e) => handleInputChange("quizType", e.target.value)}>
               <option value="graded-quiz">Graded Quiz</option>
               <option value="practice-quiz">Practice Quiz</option>
               <option value="graded-survey">Graded Survey</option>
@@ -68,7 +82,8 @@ export default function QuizzesEditor() {
             <label htmlFor="wd-points">Points</label>
           </td>
           <td>
-            <input id="wd-points" value={100} />
+            <input id="wd-points" type="number"
+              value={quiz?.points} onChange={(e) => handleInputChange("points", parseInt(e.target.value))} />
           </td>
         </tr>
         <tr>
@@ -76,7 +91,7 @@ export default function QuizzesEditor() {
             <label htmlFor="wd-group">Assignment Group</label>
           </td>
           <td>
-            <select id="wd-group">
+            <select id="wd-group" value={quiz?.assignmentGroup} onChange={(e) => handleInputChange("assignmentGroup", e.target.value)}>
               <option value="quizzes">QUIZZES</option>
               <option value="exams">EXAMS</option>
               <option value="assignments">ASSIGNMENTS</option>
@@ -89,7 +104,8 @@ export default function QuizzesEditor() {
             <label htmlFor="wd-shuffle-answers">Shuffle Answers</label>
           </td>
           <td>
-            {/* checkbox, default yes */}
+            <input id="wd-shuffle-answers" type="checkbox"
+              checked={quiz?.shuffleAnswers} onChange={(e) => handleInputChange("shuffleAnswers", e.target.checked)} />
           </td>
         </tr>
         <tr>
@@ -97,7 +113,7 @@ export default function QuizzesEditor() {
             <label htmlFor="wd-time-limit">Time Limit</label>
           </td>
           <td>
-            <input id="wd-time-limit" value={20} />
+            <input id="wd-time-limit" type="number" value={quiz?.timeLimit} onChange={(e) => handleInputChange("timeLimit", parseInt(e.target.value))} />
             <label>  minutes</label>
           </td>
         </tr>
@@ -106,7 +122,7 @@ export default function QuizzesEditor() {
             <label htmlFor="wd-attempts">Multiple Attempts</label>
           </td>
           <td>
-            {/* checkbox, default no */}
+            <input id="wd-attempts" type="checkbox" checked={quiz?.multipleAttempts} onChange={(e) => handleInputChange("multipleAttempts", e.target.checked)} />
           </td>
         </tr>
         <tr>
@@ -114,7 +130,8 @@ export default function QuizzesEditor() {
             <label htmlFor="wd-allowed-attempts">Number of Attempts</label>
           </td>
           <td>
-            <input id="wd-allowed-attempts" value={1} />
+            <input id="wd-allowed-attempts" type="number"
+              value={quiz?.attemptsAllowed} onChange={(e) => handleInputChange("attemptsAllowed", parseInt(e.target.value))} />
           </td>
         </tr>
         <tr>
@@ -122,7 +139,7 @@ export default function QuizzesEditor() {
             <label htmlFor="wd-show-answers">Show Correct Answers</label>
           </td>
           <td>
-            <select id="wd-show-answers">
+            <select id="wd-show-answers" value={quiz?.showAnswers} onChange={(e) => handleInputChange("showAnswers", e.target.value)}>
               <option value="never">Never</option>
               <option value="immediately">Immediately</option>
             </select>
@@ -133,7 +150,7 @@ export default function QuizzesEditor() {
             <label htmlFor="wd-access-code">Access Code</label>
           </td>
           <td>
-            <input id="wd-access-code" value="" />
+            <input id="wd-access-code" value={quiz?.accessCode} onChange={(e) => handleInputChange("accessCode", e.target.value)} />
           </td>
         </tr>
         <tr>
@@ -141,7 +158,8 @@ export default function QuizzesEditor() {
             <label htmlFor="wd-one-question">One Question at a Time</label>
           </td>
           <td>
-            {/* checkbox, default yes */}
+            <input id="wd-one-question" type="checkbox"
+              checked={quiz?.oneQuestionAtATime} onChange={(e) => handleInputChange("oneQuestionAtATime", e.target.checked)} />
           </td>
         </tr>
         <tr>
@@ -149,7 +167,8 @@ export default function QuizzesEditor() {
             <label htmlFor="wd-webcam">Webcam Required</label>
           </td>
           <td>
-            {/* checkbox, default no */}
+            <input id="wd-webcam" type="checkbox"
+              checked={quiz?.webcamRequired} onChange={(e) => handleInputChange("webcamRequired", e.target.checked)} />
           </td>
         </tr>
         <tr>
@@ -157,7 +176,8 @@ export default function QuizzesEditor() {
             <label htmlFor="wd-lock-questions">Lock Questions After Answering</label>
           </td>
           <td>
-            {/* checkbox, default no */}
+            <input id="wd-lock-questions" type="checkbox"
+              checked={quiz?.lockQuestions} onChange={(e) => handleInputChange("lockQuestions", e.target.checked)} />
           </td>
         </tr>
         <tr>
@@ -165,7 +185,7 @@ export default function QuizzesEditor() {
             <label htmlFor="wd-due-date">Due</label>
           </td>
           <td>
-            <input type="date" id="wd-due-date" value="2024-05-13" />
+            <input type="date" id="wd-due-date" defaultValue="2024-05-13" />
           </td>
         </tr>
         <tr>
@@ -173,7 +193,7 @@ export default function QuizzesEditor() {
             <label htmlFor="wd-available-from">Available from</label>
           </td>
           <td>
-            <input type="date" id="wd-available-from" value="2024-05-06" />
+            <input type="date" id="wd-available-from" defaultValue="2024-05-06" />
           </td>
         </tr>
         <tr>
@@ -181,12 +201,12 @@ export default function QuizzesEditor() {
             <label htmlFor="wd-available-until">Until</label>
           </td>
           <td>
-            <input type="date" id="wd-available-until" value="2024-05-20" />
+            <input type="date" id="wd-available-until" defaultValue="2024-05-20" />
           </td>
         </tr>
         <tr>
           <td align="right" valign="top"></td>
-          <button id="wd-save-quiz">Save</button>
+          <button id="wd-save-quiz" onClick={handleSave}>Save</button>
         </tr>
       </table>
     </div>
