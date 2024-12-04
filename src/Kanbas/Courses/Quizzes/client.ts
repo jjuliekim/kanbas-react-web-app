@@ -12,4 +12,4 @@ export const deleteQuiz = async (quizId: string) => {
 export const updateQuiz = async (quiz: any) => {
   const { data } = await axiosWithCredentials.put(`${QUIZZES_API}/${quiz._id}`, quiz);
   return data;
-}
+};
