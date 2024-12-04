@@ -112,7 +112,6 @@ export default function Quizzes() {
                 });
                 availabilityText = `Not available until ${formattedAvailableFromDate}`;
               }
-
               const formattedDueDate = dueDate
                 ? dueDate.toLocaleString("en-US", {
                   month: "long",
@@ -122,7 +121,6 @@ export default function Quizzes() {
                   hour12: true,
                 })
                 : "N/A";
-
               return (
                 <li className="wd-quiz list-group-item p-3 ps-1 d-flex align-items-center" key={quiz._id}>
                   <MdOutlineRocketLaunch color="green" className="me-3 ms-2" />

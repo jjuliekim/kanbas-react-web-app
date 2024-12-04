@@ -83,15 +83,6 @@ export default function QuizzesEditor() {
       </div>
       <div className="row mb-3">
         <div className="col text-end">
-          <label htmlFor="wd-points" className="form-label">Points</label>
-        </div>
-        <div className="col">
-          <input id="wd-points" type="number" className="form-control"
-            value={quiz?.points} onChange={(e) => handleInputChange("points", parseInt(e.target.value))} />
-        </div>
-      </div>
-      <div className="row mb-3">
-        <div className="col text-end">
           <label htmlFor="wd-group" className="form-label">Assignment Group</label>
         </div>
         <div className="col">
@@ -104,17 +95,15 @@ export default function QuizzesEditor() {
           </select>
         </div>
       </div>
-
       <div className="row mb-3">
         <div className="col text-end">
-          <label htmlFor="wd-shuffle-answers" className="form-label">Shuffle Answers</label>
+          <label htmlFor="wd-points" className="form-label">Points</label>
         </div>
         <div className="col">
-          <input id="wd-shuffle-answers" type="checkbox" className="form-check-input"
-            checked={quiz?.shuffleAnswers} onChange={(e) => handleInputChange("shuffleAnswers", e.target.checked)} />
+          <input id="wd-points" type="number" className="form-control"
+            value={quiz?.points} onChange={(e) => handleInputChange("points", parseInt(e.target.value))} />
         </div>
       </div>
-
       <div className="row mb-3">
         <div className="col text-end">
           <label htmlFor="wd-time-limit" className="form-label">Time Limit</label>
@@ -123,16 +112,6 @@ export default function QuizzesEditor() {
           <input id="wd-time-limit" type="number" className="form-control" style={{ width: 100 }}
             value={quiz?.timeLimit} onChange={(e) => handleInputChange("timeLimit", parseInt(e.target.value))} />
           <span className="ms-2">Minutes</span>
-        </div>
-      </div>
-
-      <div className="row mb-3">
-        <div className="col text-end">
-          <label htmlFor="wd-attempts" className="form-label">Multiple Attempts</label>
-        </div>
-        <div className="col">
-          <input id="wd-attempts" type="checkbox" className="form-check-input"
-            checked={quiz?.multipleAttempts} onChange={(e) => handleInputChange("multipleAttempts", e.target.checked)} />
         </div>
       </div>
 
@@ -169,67 +148,77 @@ export default function QuizzesEditor() {
         </div>
       </div>
 
-      <div className="row mb-3">
+      <div className="row align-items-start mb-3">
         <div className="col text-end">
-          <label htmlFor="wd-one-question" className="form-label">One Question at a Time</label>
+          Options
         </div>
-        <div className="col">
-          <input id="wd-one-question" type="checkbox" className="form-check-input"
-            checked={quiz?.oneQuestionAtATime} onChange={(e) => handleInputChange("oneQuestionAtATime", e.target.checked)} />
+        <div className="col border p-3">
+          <div className="form-check mb-3">
+            <input id="wd-shuffle-answers" type="checkbox" className="form-check-input"
+              checked={quiz?.shuffleAnswers} onChange={(e) => handleInputChange("shuffleAnswers", e.target.checked)} />
+            <label htmlFor="wd-shuffle-answers" className="form-check-label ms-2">Shuffle Answers</label>
+          </div>
+          <div className="form-check mb-3">
+            <input id="wd-attempts" type="checkbox" className="form-check-input"
+              checked={quiz?.multipleAttempts} onChange={(e) => handleInputChange("multipleAttempts", e.target.checked)} />
+            <label htmlFor="wd-attempts" className="form-check-label ms-2">Multiple Attempts</label>
+          </div>
+          <div className="form-check mb-3">
+            <input id="wd-one-question" type="checkbox" className="form-check-input"
+              checked={quiz?.oneQuestionAtATime} onChange={(e) => handleInputChange("oneQuestionAtATime", e.target.checked)} />
+            <label htmlFor="wd-one-question" className="form-check-label ms-2">One Question at a Time</label>
+          </div>
+          <div className="form-check mb-3">
+            <input id="wd-webcam" type="checkbox" className="form-check-input"
+              checked={quiz?.webcamRequired} onChange={(e) => handleInputChange("webcamRequired", e.target.checked)} />
+            <label htmlFor="wd-webcam" className="form-check-label ms-2">Webcam Required</label>
+          </div>
+          <div className="form-check">
+            <input id="wd-lock-questions" type="checkbox" className="form-check-input"
+              checked={quiz?.lockQuestions} onChange={(e) => handleInputChange("lockQuestions", e.target.checked)} />
+            <label htmlFor="wd-lock-questions" className="form-check-label ms-2">Lock Questions After Answering</label>
+          </div>
         </div>
       </div>
 
-      <div className="row mb-3">
+      <div className="row align-items-start mb-3">
         <div className="col text-end">
-          <label htmlFor="wd-webcam" className="form-label">Webcam Required</label>
+          Dates
         </div>
-        <div className="col">
-          <input id="wd-webcam" type="checkbox" className="form-check-input"
-            checked={quiz?.webcamRequired} onChange={(e) => handleInputChange("webcamRequired", e.target.checked)} />
-        </div>
-      </div>
+        <div className="col border p-3">
+          <div className="row mb-3">
+            <div className="col">
+              <label htmlFor="wd-due-date" className="form-label">Due Date</label>
+            </div>
+            <div className="col">
+              <input type="datetime-local" id="wd-due-date" className="form-control"
+                value={quiz?.dueDate ? quiz.dueDate.slice(0, 16) : ""}
+                onChange={(e) => handleInputChange("dueDate", e.target.value)} />
+            </div>
+          </div>
 
-      <div className="row mb-3">
-        <div className="col text-end">
-          <label htmlFor="wd-lock-questions" className="form-label">Lock Questions After Answering</label>
-        </div>
-        <div className="col">
-          <input id="wd-lock-questions" type="checkbox" className="form-check-input"
-            checked={quiz?.lockQuestions} onChange={(e) => handleInputChange("lockQuestions", e.target.checked)} />
-        </div>
-      </div>
+          <div className="row mb-3">
+            <div className="col">
+              <label htmlFor="wd-available-from" className="form-label">Available from</label>
+            </div>
+            <div className="col">
+              <input type="datetime-local" id="wd-available-from" className="form-control"
+                value={quiz?.availableFrom ? quiz.availableFrom.slice(0, 16) : ""}
+                onChange={(e) => handleInputChange("availableFrom", e.target.value)} />
+            </div>
+          </div>
 
-      <div className="row mb-3">
-        <div className="col text-end">
-          <label htmlFor="wd-due-date" className="form-label">Due Date</label>
-        </div>
-        <div className="col">
-          <input type="datetime-local" id="wd-due-date" className="form-control"
-            value={quiz?.dueDate ? quiz.dueDate.slice(0, 16) : ""}
-            onChange={(e) => handleInputChange("dueDate", e.target.value)} />
-        </div>
-      </div>
-
-      <div className="row mb-3">
-        <div className="col text-end">
-          <label htmlFor="wd-available-from" className="form-label">Available from</label>
-        </div>
-        <div className="col">
-          <input type="datetime-local" id="wd-available-from" className="form-control"
-            value={quiz?.availableFrom ? quiz.availableFrom.slice(0, 16) : ""}
-            onChange={(e) => handleInputChange("availableFrom", e.target.value)} />
-        </div>
-      </div>
-
-      <div className="row mb-3">
-        <div className="col text-end">
-          <label htmlFor="wd-available-until" className="form-label">Available until</label>
-        </div>
-        <div className="col">
-          <input type="datetime-local" id="wd-available-until" className="form-control"
-            value={quiz?.availableUntil ? quiz.availableUntil.slice(0, 16) : ""}
-            onChange={(e) => handleInputChange("availableUntil", e.target.value)}
-          />
+          <div className="row mb-3">
+            <div className="col">
+              <label htmlFor="wd-available-until" className="form-label">Available until</label>
+            </div>
+            <div className="col">
+              <input type="datetime-local" id="wd-available-until" className="form-control"
+                value={quiz?.availableUntil ? quiz.availableUntil.slice(0, 16) : ""}
+                onChange={(e) => handleInputChange("availableUntil", e.target.value)}
+              />
+            </div>
+          </div>
         </div>
       </div>
 
