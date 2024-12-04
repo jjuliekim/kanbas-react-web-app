@@ -3,14 +3,25 @@ import { IoIosSearch } from "react-icons/io";
 import { IoEllipsisVertical } from "react-icons/io5";
 import GreenCheckmark from "../Modules/GreenCheckmark";
 import { useParams } from "react-router";
-import * as db from "../../Database";
 import { MdOutlineRocketLaunch } from "react-icons/md";
 import { useSelector } from "react-redux";
+import * as coursesClient from "../client";
+import * as quizzesClient from "./client";
+import { useEffect, useState } from "react";
 
 export default function Quizzes() {
   const { cid } = useParams();
-  const quizzes = db.quizzes;
+  const[quizzes, setQuizzes] = useState([]);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
+
+  const fetchQuizzes = async () => {
+    const quizzes = await coursesClient.findQuizzesForCourse(cid as string);
+    console.log('quizzes', quizzes);
+    setQuizzes(quizzes);
+  };
+  useEffect(() => {
+    fetchQuizzes();
+  }, []);
 
   return (
     <div>
@@ -38,7 +49,6 @@ export default function Quizzes() {
           </div>
           <ul className="wd-quiz-list list-group rounded-0">
             {quizzes
-              .filter((quiz: any) => quiz.course === cid)
               .map((quiz: any) => {
                 const dueDate = new Date(quiz.dueDate);
                 const availableDate = new Date(quiz.availableFrom);
@@ -80,16 +90,6 @@ export default function Quizzes() {
               })
             }
           </ul>
-          <a className="wd-quiz-link"
-            href="#/Kanbas/Courses/1234/Quizzes/123">
-            Q1 - HTML
-          </a>
-        </li>
-        <li className="wd-quiz-list-item">
-          <a className="wd-quiz-link"
-            href="#/Kanbas/Courses/1234/Quizzes/124">
-            Q2 - CSS
-          </a>
         </li>
       </ul>
     </div>
