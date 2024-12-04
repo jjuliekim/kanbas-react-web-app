@@ -18,6 +18,7 @@ export default function Quizzes() {
     title: string;
     dueDate: string;
     availableFrom: string;
+    availableUntil: string;
     points: number;
     numQuestions: number;
     published: boolean;
@@ -89,22 +90,38 @@ export default function Quizzes() {
           </div>
           <ul className="wd-quiz-list list-group rounded-0">
             {filteredQuizzes.map((quiz: any) => {
-              const dueDate = new Date(quiz.dueDate);
-              const availableDate = new Date(quiz.availableFrom);
-              const formattedAvailableFromDate = availableDate.toLocaleString('en-US', {
-                month: 'long',
-                day: 'numeric',
-                hour: 'numeric',
-                minute: 'numeric',
-                hour12: true,
-              });
-              const formattedDueDate = dueDate.toLocaleString('en-US', {
-                month: 'long',
-                day: 'numeric',
-                hour: 'numeric',
-                minute: 'numeric',
-                hour12: true,
-              });
+              const currentDate = new Date();
+              const availableFromDate = quiz.availableFrom ? new Date(quiz.availableFrom) : null;
+              const availableUntilDate = quiz.availableUntil ? new Date(quiz.availableUntil) : null;
+              const dueDate = quiz.dueDate ? new Date(quiz.dueDate) : null;
+
+              let availabilityText = "";
+              if (!availableFromDate || !availableUntilDate) {
+                availabilityText = "Invalid date range";
+              } else if (currentDate > availableUntilDate) {
+                availabilityText = "Closed";
+              } else if (currentDate >= availableFromDate && currentDate <= availableUntilDate) {
+                availabilityText = "Available";
+              } else {
+                const formattedAvailableFromDate = availableFromDate.toLocaleString("en-US", {
+                  month: "long",
+                  day: "numeric",
+                  hour: "numeric",
+                  minute: "numeric",
+                  hour12: true,
+                });
+                availabilityText = `Not available until ${formattedAvailableFromDate}`;
+              }
+
+              const formattedDueDate = dueDate
+                ? dueDate.toLocaleString("en-US", {
+                  month: "long",
+                  day: "numeric",
+                  hour: "numeric",
+                  minute: "numeric",
+                  hour12: true,
+                })
+                : "N/A";
 
               return (
                 <li className="wd-quiz list-group-item p-3 ps-1 d-flex align-items-center" key={quiz._id}>
@@ -115,7 +132,7 @@ export default function Quizzes() {
                       {quiz.title}
                     </a>
                     <div className="text-muted small">
-                      <strong>Not available until</strong> {formattedAvailableFromDate} |
+                      <strong> {availabilityText} </strong> | {" "} 
                       <strong> Due</strong> {formattedDueDate} | {quiz.points} pts | {quiz.numQuestions} Questions
                     </div>
                   </div>

@@ -15,7 +15,6 @@ export default function AssignmentEditor() {
     if (!cid) return;
     const newAssignment = {
       title: (document.getElementById("wd-name") as HTMLInputElement)?.value,
-      // course: cid,
       description: (document.getElementById("wd-description") as HTMLInputElement)?.value,
       dueDate: (document.getElementById("wd-due-date") as HTMLInputElement)?.value,
       availableFrom: (document.getElementById("wd-available-from") as HTMLInputElement)?.value,
@@ -30,7 +29,6 @@ export default function AssignmentEditor() {
     const assignment = {
       _id: aid || new Date().getTime().toString(),
       title: (document.getElementById("wd-name") as HTMLInputElement)?.value,
-      // course: cid,
       description: (document.getElementById("wd-description") as HTMLInputElement)?.value,
       dueDate: (document.getElementById("wd-due-date") as HTMLInputElement)?.value,
       availableFrom: (document.getElementById("wd-available-from") as HTMLInputElement)?.value,
