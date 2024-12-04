@@ -14,9 +14,9 @@ export default function QuizzesEditor() {
         setQuiz({
           title: "Enter quiz title",
           description: "Enter quiz description",
-          quizType: "graded-quiz",
+          quizType: "Graded Quiz",
           points: 100,
-          assignmentGroup: "quizzes",
+          assignmentGroup: "QUIZZES",
           shuffleAnswers: true,
           timeLimit: 20,
           dueDate: "",
@@ -46,8 +46,18 @@ export default function QuizzesEditor() {
     } else {
       await quizzesClient.updateQuiz({ ...quizData, _id: qid });
     }
-    navigate(`/Kanbas/Courses/${cid}/Quizzes`);
+    navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}`);
   };
+
+  const handleSaveAndPublish = async () => {
+    const quizData = { ...quiz, published: true };
+    if (qid === "new") {
+      await coursesClient.createQuizForCourse(cid as string, quizData);
+    } else {
+      await quizzesClient.updateQuiz({ ...quizData, _id: qid });
+    }
+    navigate(`/Kanbas/Courses/${cid}/Quizzes`);
+  }
 
   const handleInputChange = (field: string, value: any) => {
     setQuiz(() => ({ ...quiz, [field]: value }));
@@ -74,10 +84,10 @@ export default function QuizzesEditor() {
         <div className="col">
           <select id="wd-quiz-type" className="form-select"
             value={quiz?.quizType} onChange={(e) => handleInputChange("quizType", e.target.value)}>
-            <option value="graded-quiz">Graded Quiz</option>
-            <option value="practice-quiz">Practice Quiz</option>
-            <option value="graded-survey">Graded Survey</option>
-            <option value="ungraded-survey">Ungraded Survey</option>
+            <option value="Graded Quiz">Graded Quiz</option>
+            <option value="Practice Quiz">Practice Quiz</option>
+            <option value="Graded Survey">Graded Survey</option>
+            <option value="Ungraded Survey">Ungraded Survey</option>
           </select>
         </div>
       </div>
@@ -88,10 +98,10 @@ export default function QuizzesEditor() {
         <div className="col">
           <select id="wd-group" className="form-select"
             value={quiz?.assignmentGroup} onChange={(e) => handleInputChange("assignmentGroup", e.target.value)}>
-            <option value="quizzes">QUIZZES</option>
-            <option value="exams">EXAMS</option>
-            <option value="assignments">ASSIGNMENTS</option>
-            <option value="project">PROJECT</option>
+            <option value="QUIZZES">QUIZZES</option>
+            <option value="EXAMS">EXAMS</option>
+            <option value="ASSIGNMENTS">ASSIGNMENTS</option>
+            <option value="PROJECT">PROJECT</option>
           </select>
         </div>
       </div>
@@ -225,7 +235,8 @@ export default function QuizzesEditor() {
       <hr className="mt-5"></hr>
       <div className="float-end">
         <button id="wd-cancel-quiz" className="btn btn-secondary me-2" onClick={() => navigate(`/Kanbas/Courses/${cid}/Quizzes`)}>Cancel</button>
-        <button id="wd-save-quiz" className="btn btn-danger" onClick={handleSave}>Save</button>
+        <button id="wd-save-quiz" className="btn btn-danger me-2" onClick={handleSave}>Save</button>
+        <button id="wd-save-publish-quiz" className="btn btn-danger" onClick={handleSaveAndPublish}>Save and Publish</button>
       </div>
     </div>
   );

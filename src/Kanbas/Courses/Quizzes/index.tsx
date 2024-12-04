@@ -50,7 +50,7 @@ export default function Quizzes() {
   };
 
   const handleCreate = async () => {
-    navigate(`/Kanbas/Courses/${cid}/Quizzes/new`);
+    navigate(`/Kanbas/Courses/${cid}/Quizzes/new/edit`);
   };
 
   const filteredQuizzes = quizzes.filter((quiz) => {
