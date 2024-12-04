@@ -45,6 +45,11 @@ export default function Quizzes() {
     setQuizzes(prevQuizzes =>
       prevQuizzes.map(q => q._id === quizId ? updatedQuiz : q)
     );
+    toggleDropdown(quizId);
+  };
+
+  const handleCreate = async () => {
+    navigate(`/Kanbas/Courses/${cid}/Quizzes/new`);
   };
 
   const filteredQuizzes = quizzes.filter((quiz) => {
@@ -69,7 +74,8 @@ export default function Quizzes() {
         </div>
         {currentUser.role === "FACULTY" && (
           <div className="col-auto ms-auto">
-            <button id="wd-add-quiz" className="btn btn-lg btn-danger me-1 float-end">
+            <button id="wd-add-quiz" className="btn btn-lg btn-danger me-1 float-end"
+              onClick={handleCreate}>
               <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
               Quiz
             </button>

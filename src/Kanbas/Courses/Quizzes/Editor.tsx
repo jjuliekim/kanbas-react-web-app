@@ -1,17 +1,51 @@
-import { useParams } from "react-router-dom";
-import { quizzes } from "../../Database";
+import { useParams, useNavigate } from "react-router-dom";
+import * as quizzesClient from "./client";
+import * as coursesClient from "../client";
+import { useState } from "react";
 
 export default function QuizzesEditor() {
-  const { qid } = useParams();
-  const quiz = quizzes.find((quiz) => quiz._id === qid);
+  const navigate = useNavigate();
+  const { cid, qid } = useParams();
+  const [quiz, setQuiz] = useState(() => {
+    if (qid === "new") {
+      return {
+        title: "",
+        description: "",
+        type: "graded-quiz",
+        points: 0,
+        group: "quizzes",
+        dueDate: "",
+        availableFrom: "",
+        availableUntil: "",
+        shuffleAnswers: true,
+        multipleAttempts: false,
+        attemptsAllowed: 1,
+        showAnswers: "never",
+        accessCode: "",
+        oneQuestionAtATime: true,
+        webcamRequired: false,
+        lockQuestions: false,
+      };
+    }
+    return quizzes.find((quiz) => quiz._id === qid) || {};
+  });
+
+  const handleSave = async () => {
+    if (qid === "new") {
+      const newQuiz = await coursesClient.createQuizForCourse(cid, quiz);
+      navigate(`/Kanbas/Courses/${cid}/Quizzes`);
+    } else {
+      await quizzesClient.updateQuiz(quiz);
+      navigate(`/Kanbas/Courses/${cid}/Quizzes`);
+    }
 
   return (
     <div id="wd-quizzes-editor" className="container">
       <div>
         <label htmlFor="wd-name">Quiz Name</label>
-        <input id="wd-name" className="form-control" value={quiz?.title} />
+        <input id="wd-name" className="form-control" placeholder="Name" value={quiz?.title} />
       </div>
-      <textarea id="wd-description" className="form-control mt-3 mb-3">
+      <textarea id="wd-description" className="form-control mt-3 mb-3" placeholder="Description">
         {quiz?.description}
       </textarea>
       <br />
