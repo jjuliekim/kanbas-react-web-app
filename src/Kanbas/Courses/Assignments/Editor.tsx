@@ -128,16 +128,16 @@ export default function AssignmentEditor() {
           </div>
           <div className="mb-3">
             <label htmlFor="wd-due-date" className="form-label">Due</label>
-            <input type="datetime-local" id="wd-due-date" className="form-control" defaultValue={assignment?.dueDate} />
+            <input type="datetime-local" id="wd-due-date" className="form-control" value={assignment?.dueDate} />
           </div>
           <div className="row mb-3">
             <div className="col">
               <label htmlFor="wd-available-from" className="form-label">Available from</label>
-              <input type="datetime-local" id="wd-available-from" className="form-control" defaultValue={assignment?.availableFrom} />
+              <input type="datetime-local" id="wd-available-from" className="form-control" value={assignment?.availableFrom} />
             </div>
             <div className="col">
               <label htmlFor="wd-available-until" className="form-label">Until</label>
-              <input type="datetime-local" id="wd-available-until" className="form-control" defaultValue={assignment?.untilDate} />
+              <input type="datetime-local" id="wd-available-until" className="form-control" value={assignment?.untilDate} />
             </div>
           </div>
         </div>

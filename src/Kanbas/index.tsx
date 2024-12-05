@@ -27,6 +27,7 @@ export default function Kanbas() {
   };
 
   const updateEnrollment = async (courseId: string, enrolled: boolean) => {
+    console.log('courseId: ', courseId);
     if (enrolled) {
       await userClient.enrollIntoCourse(currentUser._id, courseId);
     } else {
@@ -41,7 +42,7 @@ export default function Kanbas() {
         }
       })
     );
-  }; 
+  };
 
   const fetchCourses = async () => {
     try {
@@ -71,7 +72,7 @@ export default function Kanbas() {
   }, [currentUser, enrolling]);
 
   const [course, setCourse] = useState<any>({
-    _id: "1234", name: "New Course", number: "New Number",
+    _id: "123", name: "New Course", number: "123",
     startDate: "2023-09-10", endDate: "2023-12-15", description: "New Description",
   });
 
