@@ -51,16 +51,6 @@ export default function QuizzesEditor() {
     navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}`);
   };
 
-  const handleSaveQuestions = async () => {
-    const quizData = { ...quiz };
-    if (qid === "new") {
-      await coursesClient.createQuizForCourse(cid as string, quizData);
-    } else {
-      await quizzesClient.updateQuiz({ ...quizData, _id: qid });
-    }
-    navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}`);
-  };
-
   const handleSaveAndPublish = async () => {
     const quizData = { ...quiz, published: true };
     if (qid === "new") {
@@ -72,7 +62,10 @@ export default function QuizzesEditor() {
   }
 
   const handleInputChange = (field: string, value: any) => {
-    setQuiz(() => ({ ...quiz, [field]: value }));
+    setQuiz((prevState: any) => ({
+      ...prevState,
+      [field]: value
+    }));
   };
 
   const detailsTab = () => {
@@ -263,20 +256,52 @@ export default function QuizzesEditor() {
 
   const QuestionsTab = () => {
     const [questions, setQuestions] = useState<any[]>([]);
+    const [originalQuestions, setOriginalQuestions] = useState<any[]>([]);
 
     useEffect(() => {
       const fetchQuestions = async () => {
         if (!qid) return;
         const questions = await questionClient.findQuestionsForQuiz(qid);
         setQuestions(questions);
+        setOriginalQuestions(questions);
       };
       fetchQuestions();
     }, [qid]);
 
     const handleAddQuestion = () => {
-      console.log("Current questions: ", questions);
-      setQuestions([...questions, { type: "multipleChoice", question: "", options: ["", "", "", ""], answer: null, points: 0 }]);
+      const newQuestion = { questionType: "multipleChoice", choices: [""], correctAnswer: "" };
+      setQuestions([...questions, newQuestion]);
+      setOriginalQuestions([...originalQuestions, newQuestion]);
     };
+
+    const handleSaveQuestion = async (index: number, question: any) => {
+      if (question._id) {
+        await questionClient.updateQuestion(qid as string, question._id, question);
+      } else {
+        const createdQuestion = await questionClient.createQuestion(qid as string, question);
+        updateQuestion(index, { ...question, _id: createdQuestion._id });
+      }
+      setOriginalQuestions((prev) => prev.map((q, i) => i === index ? { ...questions[index] } : q));
+    }
+
+    const updateQuestion = (index: number, updatedQuestion: any) => {
+      setQuestions((prevQuestions) => prevQuestions.map((q, i) => i === index ? { ...q, ...updatedQuestion } : q));
+    }
+
+    const handleRemoveQuestion = async (index: number) => {
+      const question = questions[index];
+      const updatedQuestions = questions.filter((_, i) => i !== index);
+      const updatedOriginalQuestions = originalQuestions.filter((_, i) => i !== index); 
+      setQuestions(updatedQuestions);
+      setOriginalQuestions(updatedOriginalQuestions);
+      if (question._id) {
+        await questionClient.deleteQuestion(qid as string, question._id);
+      }
+    };
+
+    const handleCancelEdit = (index: number) => {
+      setQuestions((prevQuestions) => prevQuestions.map((q, i) => i === index ? { ...originalQuestions[index] } : q));
+    }
 
     const totalPoints = questions.reduce((sum, question) => sum + (question.points || 0), 0);
 
@@ -295,35 +320,31 @@ export default function QuizzesEditor() {
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <div>
                   <strong>Question Type</strong>
-                  <select className="dropdown form-select"
-                    value={question.questionType || "multipleChoice"}
-                    onChange={(e) => setQuestions(questions.map((q, i) =>
-                      i === index ? { ...q, questionType: e.target.value, choices: [], correctAnswer: "", correctAnswers: [] } : q))}>
+                  <select className="dropdown form-select" value={question.questionType || "multipleChoice"}
+                    onChange={(e) => updateQuestion(index, {
+                      questionType: e.target.value, choices: [], correctAnswer: "", correctAnswers: [],
+                    })}>
                     <option value="multipleChoice">Multiple Choice</option>
                     <option value="trueFalse">True/False</option>
                     <option value="fillInTheBlank">Fill in the Blank</option>
                   </select>
                 </div>
                 <button className="btn btn-danger"
-                  onClick={() => setQuestions(questions.filter((_, i) => i !== index))}>
+                  onClick={() => handleRemoveQuestion(index)}>
                   Remove Question
                 </button>
               </div>
 
               <div>
                 <strong>Question Text</strong>
-                <input type="text" className="form-control"
-                  value={question.questionText || ""}
-                  onChange={(e) => setQuestions(questions.map((q, i) =>
-                    i === index ? { ...q, questionText: e.target.value } : q))} />
+                <input type="text" className="form-control" value={question.questionText || ""}
+                  onChange={(e) => updateQuestion(index, { questionText: e.target.value })} />
               </div>
 
               <div>
                 <strong>Points</strong>
-                <input type="number" className="form-control"
-                  value={question.points || 0}
-                  onChange={(e) => setQuestions(questions.map((q, i) =>
-                    i === index ? { ...q, points: parseInt(e.target.value, 10) || 0 } : q))} />
+                <input type="number" className="form-control" value={question.points || 0}
+                  onChange={(e) => updateQuestion(index, { points: parseInt(e.target.value, 10) || 0 })} />
               </div>
 
               {question.questionType === "multipleChoice" && (
@@ -331,29 +352,24 @@ export default function QuizzesEditor() {
                   <strong>Answers</strong>
                   {question.choices.map((choice: any, choiceIndex: Key | null | undefined) => (
                     <div key={choiceIndex} className="d-flex align-items-center mb-2">
-                      <input type="radio" name={`correct-answer-${index}`}
-                        checked={question.correctAnswer === choice}
-                        onChange={() => setQuestions(questions.map((q, i) => i === index ? { ...q, correctAnswer: choice } : q))} />
-                      <input
-                        type="text"
-                        className="form-control mx-2"
-                        value={choice || ""}
-                        onChange={(e) => setQuestions(questions.map((q, i) => i === index ? {
-                          ...q, choices: q.choices.map((c: any, ci: any) => ci === choiceIndex ? e.target.value : c),
-                        } : q))} />
-                      <button
-                        className="btn btn-danger"
-                        onClick={() => setQuestions(questions.map((q, i) => i === index ? {
-                          ...q, choices: q.choices.filter((_: any, ci: any) => ci !== choiceIndex),
-                        } : q))}>
+                      <input type="radio" name={`correct-answer-${index}`} checked={question.correctAnswer === choice}
+                        onChange={() => updateQuestion(index, { correctAnswer: choice })} />
+                      <input type="text" className="form-control mx-2" value={choice || ""}
+                        onChange={(e) => updateQuestion(index, {
+                          choices: question.choices.map((c: any, ci: any) =>
+                            ci === choiceIndex ? e.target.value : c
+                          ),
+                        })} />
+                      <button className="btn btn-danger"
+                        onClick={() => updateQuestion(index, {
+                          choices: question.choices.filter((_: any, ci: any) => ci !== choiceIndex),
+                        })}>
                         Remove
                       </button>
                     </div>
                   ))}
-                  <button
-                    className="btn btn-secondary mt-2 ms-2"
-                    onClick={() => setQuestions(questions.map((q, i) => i === index
-                      ? { ...q, choices: [...q.choices, ""] } : q))}>
+                  <button className="btn btn-secondary mt-2 ms-2"
+                    onClick={() => updateQuestion(index, { choices: [...question.choices, ""] })}>
                     Add Choice
                   </button>
                 </div>
@@ -363,17 +379,13 @@ export default function QuizzesEditor() {
                 <div>
                   <strong>Correct Answer</strong>
                   <div className="form-check">
-                    <input type="radio" className="form-check-input" name={`true-false-${index}`}
-                      checked={question.correctAnswer === "true"}
-                      onChange={() => setQuestions(questions.map((q, i) =>
-                        i === index ? { ...q, correctAnswer: "true" } : q))} />
+                    <input type="radio" className="form-check-input" name={`true-false-${index}`} checked={question.correctAnswer === "true"}
+                      onChange={() => updateQuestion(index, { correctAnswer: "true" })} />
                     <label className="form-check-label">True</label>
                   </div>
                   <div className="form-check">
-                    <input type="radio" className="form-check-input" name={`true-false-${index}`}
-                      checked={question.correctAnswer === "false"}
-                      onChange={() => setQuestions(questions.map((q, i) =>
-                        i === index ? { ...q, correctAnswer: "false" } : q))} />
+                    <input type="radio" className="form-check-input" name={`true-false-${index}`} checked={question.correctAnswer === "false"}
+                      onChange={() => updateQuestion(index, { correctAnswer: "false" })} />
                     <label className="form-check-label">False</label>
                   </div>
                 </div>
@@ -385,24 +397,33 @@ export default function QuizzesEditor() {
                   {question.correctAnswers.map((answer: any, answerIndex: Key | null | undefined) => (
                     <div key={answerIndex} className="d-flex align-items-center mb-2">
                       <input type="text" className="form-control" value={answer || ""}
-                        onChange={(e) => setQuestions(questions.map((q, i) => i === index ? {
-                          ...q, correctAnswers: q.correctAnswers.map((a: any, ai: any) =>
-                            ai === answerIndex ? e.target.value : a),
-                        } : q))} />
+                        onChange={(e) => updateQuestion(index, {
+                          correctAnswers: question.correctAnswers.map((a: any, ai: any) =>
+                            ai === answerIndex ? e.target.value : a
+                          ),
+                        })} />
                       <button className="btn btn-danger ms-2"
-                        onClick={() => setQuestions(questions.map((q, i) => i === index
-                          ? { ...q, correctAnswers: q.correctAnswers.filter((_: any, ai: any) => ai !== answerIndex), } : q))}>
+                        onClick={() => updateQuestion(index, {
+                          correctAnswers: question.correctAnswers.filter(
+                            (_: any, ai: Key | null | undefined) => ai !== answerIndex
+                          ),
+                        })}>
                         Remove
                       </button>
                     </div>
                   ))}
-                  <button className="btn btn-secondary mt-2"
-                    onClick={() => setQuestions(questions.map((q, i) => i === index
-                      ? { ...q, correctAnswers: [...q.correctAnswers, ""] } : q))} >
+                  <button className="btn btn-secondary mt-2 ms-2"
+                    onClick={() => updateQuestion(index, { correctAnswers: [...question.correctAnswers, ""] })} >
                     Add Answer
                   </button>
                 </div>
               )}
+              <button className="btn btn-danger mt-3" onClick={() => handleSaveQuestion(index, question)}>
+                Save Question
+              </button>
+              <button className="btn btn-secondary mt-3 ms-2" onClick={() => handleCancelEdit(index)}>
+                Cancel Edits
+              </button>
             </div>
           ))}
           <hr className="mt-5" />
@@ -411,8 +432,8 @@ export default function QuizzesEditor() {
               onClick={() => navigate(`/Kanbas/Courses/${cid}/Quizzes`)}>
               Cancel
             </button>
-            <button id="wd-save-quiz" className="btn btn-danger me-2" onClick={handleSaveQuestions}>
-              Save
+            <button id="wd-save-quiz" className="btn btn-danger me-2" onClick={handleSave}>
+              Save Quiz
             </button>
           </div>
         </div>

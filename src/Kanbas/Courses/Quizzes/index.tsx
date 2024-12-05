@@ -9,6 +9,7 @@ import * as coursesClient from "../client";
 import * as quizzesClient from "./client";
 import { useEffect, useState } from "react";
 import { GrClear } from "react-icons/gr";
+import * as questionClient from "./questionClient";
 
 export default function Quizzes() {
   const { cid } = useParams();
@@ -27,6 +28,10 @@ export default function Quizzes() {
 
   const fetchQuizzes = async () => {
     const quizzes = await coursesClient.findQuizzesForCourse(cid as string);
+    for (const quiz of quizzes) {
+      const questions = await questionClient.findQuestionsForQuiz(quiz._id);
+      quiz.numQuestions = questions.length;
+    }
     setQuizzes(quizzes);
   };
   useEffect(() => {

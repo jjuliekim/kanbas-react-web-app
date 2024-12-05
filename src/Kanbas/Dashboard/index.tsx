@@ -55,7 +55,7 @@ export default function Dashboard({
                         {course.description}
                       </p>
                       <button className="btn btn-primary"> Go </button>
-                      {enrolling && currentUser.role === "STUDENT" && (
+                      {enrolling && (
                         <button onClick={(event) => {
                           event.preventDefault();
                           updateEnrollment(course._id, !course.enrolled);

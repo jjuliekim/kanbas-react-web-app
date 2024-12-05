@@ -31,6 +31,10 @@ export default function QuizDetails() {
     navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/start`);
   };
 
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleString();
+  };
+
   return (
     <div className="container">
       <h2>{quiz?.title}</h2>
@@ -104,17 +108,17 @@ export default function QuizDetails() {
 
           <div className="row mb-2">
             <div className="col text-end"><strong>Due Date:</strong></div>
-            <div className="col">{quiz?.dueDate || "Not set"}</div>
+            <div className="col">{formatDate(quiz?.dueDate) || "Not set"}</div>
           </div>
 
           <div className="row mb-2">
             <div className="col text-end"><strong>Available From:</strong></div>
-            <div className="col">{quiz?.availableFrom || "Not set"}</div>
+            <div className="col">{formatDate(quiz?.availableFrom) || "Not set"}</div>
           </div>
 
           <div className="row mb-2">
             <div className="col text-end"><strong>Available Until:</strong></div>
-            <div className="col">{quiz?.availableUntil || "Not set"}</div>
+            <div className="col">{formatDate(quiz?.availableUntil) || "Not set"}</div>
           </div>
 
           <hr />
