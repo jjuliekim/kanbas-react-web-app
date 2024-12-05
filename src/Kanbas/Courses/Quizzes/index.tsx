@@ -131,7 +131,8 @@ export default function Quizzes() {
                     </a>
                     <div className="text-muted small">
                       <strong> {availabilityText} </strong> | {" "} 
-                      <strong> Due</strong> {formattedDueDate} | {quiz.points} pts | {quiz.numQuestions} Questions
+                      <strong> Due</strong> {formattedDueDate} | {quiz.points} pts | {quiz.numQuestions} Questions |
+                      Recent Score: {quiz.scores?.get(currentUser._id) || "N/A"}
                     </div>
                   </div>
                   {currentUser.role === "FACULTY" && (
