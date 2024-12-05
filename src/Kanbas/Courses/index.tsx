@@ -8,11 +8,24 @@ import Quizzes from "./Quizzes";
 import QuizzesEditor from "./Quizzes/Editor";
 import { FaAlignJustify } from "react-icons/fa";
 import PeopleTable from "./People/Table";
+import * as client from "./client";
+import { useEffect, useState } from "react";
 
 export default function Courses({ courses }: { courses: any[]; }) {
   const { cid } = useParams();
   const course = courses.find((course) => course._id === cid);
   const { pathname } = useLocation();
+  const [users, setUsers] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      if (cid) {
+        const users = await client.findUsersForCourse(cid as string);
+        setUsers(users);
+      }
+    };
+    fetchUsers();
+  }, [cid]);
 
   return (
     <div id="wd-courses">
@@ -35,7 +48,7 @@ export default function Courses({ courses }: { courses: any[]; }) {
             <Route path="Assignments/:aid" element={<AssignmentEditor />} />
             <Route path="Quizzes" element={<Quizzes />} />
             <Route path="Quizzes/:qid" element={<QuizzesEditor />} />
-            <Route path="People" element={<PeopleTable />} />
+            <Route path="People" element={<PeopleTable users={users}/>} />
           </Routes>
         </div>
       </div>

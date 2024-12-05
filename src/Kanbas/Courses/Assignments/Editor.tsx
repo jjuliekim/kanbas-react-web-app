@@ -4,9 +4,6 @@ import { useSelector, useDispatch } from "react-redux";
 import * as coursesClient from "../client";
 import * as assignmentsClient from "./client";
 
-// refactor to use client file to create, retrieve, update, and delete assignments
-// changes should persist even if screen is refreshed
-
 export default function AssignmentEditor() {
   const { cid, aid } = useParams();
   const assignment = useSelector((state: any) =>
@@ -18,7 +15,6 @@ export default function AssignmentEditor() {
     if (!cid) return;
     const newAssignment = {
       title: (document.getElementById("wd-name") as HTMLInputElement)?.value,
-      course: cid,
       description: (document.getElementById("wd-description") as HTMLInputElement)?.value,
       dueDate: (document.getElementById("wd-due-date") as HTMLInputElement)?.value,
       availableFrom: (document.getElementById("wd-available-from") as HTMLInputElement)?.value,
@@ -33,7 +29,6 @@ export default function AssignmentEditor() {
     const assignment = {
       _id: aid || new Date().getTime().toString(),
       title: (document.getElementById("wd-name") as HTMLInputElement)?.value,
-      course: cid,
       description: (document.getElementById("wd-description") as HTMLInputElement)?.value,
       dueDate: (document.getElementById("wd-due-date") as HTMLInputElement)?.value,
       availableFrom: (document.getElementById("wd-available-from") as HTMLInputElement)?.value,
@@ -133,16 +128,16 @@ export default function AssignmentEditor() {
           </div>
           <div className="mb-3">
             <label htmlFor="wd-due-date" className="form-label">Due</label>
-            <input type="datetime-local" id="wd-due-date" className="form-control" defaultValue={assignment?.dueDate} />
+            <input type="datetime-local" id="wd-due-date" className="form-control" value={assignment?.dueDate} />
           </div>
           <div className="row mb-3">
             <div className="col">
               <label htmlFor="wd-available-from" className="form-label">Available from</label>
-              <input type="datetime-local" id="wd-available-from" className="form-control" defaultValue={assignment?.availableFrom} />
+              <input type="datetime-local" id="wd-available-from" className="form-control" value={assignment?.availableFrom} />
             </div>
             <div className="col">
               <label htmlFor="wd-available-until" className="form-label">Until</label>
-              <input type="datetime-local" id="wd-available-until" className="form-control" defaultValue={assignment?.untilDate} />
+              <input type="datetime-local" id="wd-available-until" className="form-control" value={assignment?.untilDate} />
             </div>
           </div>
         </div>
