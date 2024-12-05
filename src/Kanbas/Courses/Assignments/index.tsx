@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteAssignment } from "./reducer";
+import { deleteAssignment, setAssignments } from "./reducer";
 import { IoIosSearch } from "react-icons/io";
 import { FaTrash } from "react-icons/fa";
 import { VscNotebook } from "react-icons/vsc";
@@ -11,6 +11,11 @@ import { BsGripVertical } from "react-icons/bs";
 import BSGripVertical from "../Modules/BsGripVertical";
 import AssignmentHeaderButtons from "./AssignmentHeaderButtons";
 import AssignmentsControl from "./AssignmentsControl";
+import * as coursesClient from "../client";
+import * as assignmentsClient from "./client";
+
+// refactor to use client file to create, retrieve, update, and delete assignments
+// changes should persist even if screen is refreshed
 
 export default function Assignments() {
   const dispatch = useDispatch();
@@ -20,15 +25,24 @@ export default function Assignments() {
   const [selectedAssignmentId, setSelectedAssignmentId] = useState<string | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-  const handleDeletion = (assignmentId: string) => {
-    dispatch(deleteAssignment(assignmentId));
-    setSelectedAssignmentId(null);
-    setShowDeleteDialog(false);
-  };
-
   const handleDeleteClick = (assignmentId: string) => {
     setSelectedAssignmentId(assignmentId);
     setShowDeleteDialog(true);
+  };
+
+  const fetchAssignments = async () => {
+    const assignments = await coursesClient.findAssignmentsForCourse(cid as string);
+    dispatch(setAssignments(assignments));
+  };
+  useEffect(() => {
+    fetchAssignments();
+  }, []);
+
+  const removeAssignment = async (assignmentId: string) => {
+    await assignmentsClient.deleteAssignment(assignmentId);
+    dispatch(deleteAssignment(assignmentId));
+    setSelectedAssignmentId(null);
+    setShowDeleteDialog(false);
   };
 
   return (
@@ -51,7 +65,6 @@ export default function Assignments() {
           </div>
           <ul className="wd-lessons list-group rounded-0">
             {assignments
-              .filter((assignment: any) => assignment.course === cid)
               .map((assignment: any) => {
                 const dueDate = new Date(assignment.dueDate);
                 const availableDate = new Date(assignment.availableFrom);
@@ -98,7 +111,7 @@ export default function Assignments() {
       </ul>
       <DeleteDialog
         assignmentId={selectedAssignmentId}
-        onConfirm={handleDeletion}
+        onConfirm={removeAssignment}
         show={showDeleteDialog}
         onHide={() => setShowDeleteDialog(false)}
       />

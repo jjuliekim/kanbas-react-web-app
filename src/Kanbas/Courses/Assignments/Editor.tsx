@@ -1,6 +1,11 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { updateAssignment, addAssignment } from "./reducer";
 import { useSelector, useDispatch } from "react-redux";
+import * as coursesClient from "../client";
+import * as assignmentsClient from "./client";
+
+// refactor to use client file to create, retrieve, update, and delete assignments
+// changes should persist even if screen is refreshed
 
 export default function AssignmentEditor() {
   const { cid, aid } = useParams();
@@ -9,7 +14,22 @@ export default function AssignmentEditor() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const saveAssignment = () => {
+  const createAssignmentForCourse = async () => {
+    if (!cid) return;
+    const newAssignment = {
+      title: (document.getElementById("wd-name") as HTMLInputElement)?.value,
+      course: cid,
+      description: (document.getElementById("wd-description") as HTMLInputElement)?.value,
+      dueDate: (document.getElementById("wd-due-date") as HTMLInputElement)?.value,
+      availableFrom: (document.getElementById("wd-available-from") as HTMLInputElement)?.value,
+      untilDate: (document.getElementById("wd-available-until") as HTMLInputElement)?.value,
+      points: (document.getElementById("wd-points") as HTMLInputElement)?.value
+    };
+    const assignment = await coursesClient.createAssignmentForCourse(cid, newAssignment);
+    dispatch(addAssignment(assignment));
+  };
+
+  const saveAssignment = async () => {
     const assignment = {
       _id: aid || new Date().getTime().toString(),
       title: (document.getElementById("wd-name") as HTMLInputElement)?.value,
@@ -21,10 +41,11 @@ export default function AssignmentEditor() {
       points: (document.getElementById("wd-points") as HTMLInputElement)?.value
     };
     if (aid) {
+      await assignmentsClient.updateAssignment(assignment);
       dispatch(updateAssignment(assignment));
     }
     else {
-      dispatch(addAssignment(assignment));
+      createAssignmentForCourse();
     }
     navigate(`/Kanbas/Courses/${cid}/Assignments`);
   }

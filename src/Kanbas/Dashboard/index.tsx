@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { enroll, unenroll } from "./reducer";
+import { enroll, unenroll, setEnrollments } from "./reducer";
+import * as client from "./client";
+import * as coursesClient from "../Courses/client";
 
 export default function Dashboard({
-  courses, course, setCourse, addNewCourse, deleteCourse, updateCourse }: {
-    courses: any[]; course: any; setCourse: (course: any) => void;
+  course, setCourse, addNewCourse, deleteCourse, updateCourse }: {
+    course: any; setCourse: (course: any) => void;
     addNewCourse: () => void; deleteCourse: (course: any) => void;
     updateCourse: () => void;
   }) {
@@ -14,6 +16,31 @@ export default function Dashboard({
   const enrollments = useSelector((state: any) => state.enrollmentsReducer.enrollments);
   const [showAllCourses, setShowAllCourses] = useState(false);
   const dispatch = useDispatch();
+  const [courses, setCourses] = useState<any[]>([]);
+
+  const handleEnrollment = async (courseId: string) => {
+    if (isEnrolled(courseId)) {
+      await client.unenrollUser(currentUser._id, courseId);
+      dispatch(unenroll({ user: currentUser._id, course: courseId }));
+    } else {
+      await client.enrollUser(currentUser._id, courseId);
+      dispatch(enroll({ user: currentUser._id, course: courseId }));
+    }
+  }
+
+  const fetchEnrollments = async () => {
+    const enrollments = await client.getUserEnrollments(currentUser._id);
+    dispatch(setEnrollments(enrollments));
+  }
+  const fetchCourses = async () => {
+    const fetchedCourses = await coursesClient.fetchAllCourses();
+    setCourses(fetchedCourses);
+  };
+
+  useEffect(() => {
+    fetchCourses();
+    fetchEnrollments();
+  }, []);
 
   const isEnrolled = (courseId: string) => {
     return enrollments.some(
@@ -21,6 +48,7 @@ export default function Dashboard({
         enrollment.user === currentUser._id && enrollment.course === courseId
     );
   };
+  const displayedCourses = showAllCourses ? courses : courses.filter(course => isEnrolled(course._id));
 
   return (
     <div id="wd-dashboard">
@@ -43,15 +71,14 @@ export default function Dashboard({
       )}
 
       <div className="d-flex justify-content-between">
-        <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2>
+        <h2 id="wd-dashboard-published">Published Courses ({displayedCourses.length})</h2>
         <button className="btn btn-primary" id="wd-dashboard-enrollments"
           onClick={() => setShowAllCourses(!showAllCourses)}>Enrollments</button>
       </div>
       <hr />
       <div id="wd-dashboard-courses" className="row">
         <div className="row row-cols-1 row-cols-md-5 g-4">
-          {courses
-            .filter((course) => showAllCourses || isEnrolled(course._id))
+          {displayedCourses
             .map((course) => (
               <div key={course._id} className="col" style={{ width: "300px" }}>
                 <div className="card rounded-3 overflow-hidden">
@@ -69,15 +96,11 @@ export default function Dashboard({
                       <button className="btn btn-primary"> Go </button>
                       {currentUser.role === "STUDENT" && (
                         <button
-                          className={`btn  float-end ${isEnrolled(course._id) ? "btn-danger" : "btn-success"}`}
-                          onClick={() => {
-                            if (isEnrolled(course._id)) {
-                              dispatch(unenroll({ user: currentUser._id, course: course._id }));
-                            } else {
-                              dispatch(enroll({ user: currentUser._id, course: course._id }));
-                            }
-                          }}
-                        >
+                          className={`btn float-end ${isEnrolled(course._id) ? "btn-danger" : "btn-success"}`}
+                          onClick={(event) => {
+                            event.preventDefault();
+                            handleEnrollment(course._id)
+                          }}>
                           {isEnrolled(course._id) ? "Unenroll" : "Enroll"}
                         </button>
                       )}
