@@ -40,10 +40,15 @@ export default function QuizResults() {
       <h2 className="text-center">Results</h2>
       <hr />
       {questions.map((question, index) => {
-        const userAnswerObj = attemptData.userAnswers.find(
-          (answer: any) => answer.question === question._id);
-        const isCorrect = userAnswerObj?.correct || false;
+        const userAnswerObj = attemptData.userAnswers.find((answer: any) => answer.question === question._id);
+        let isCorrect = false;
         const userAnswer = userAnswerObj?.userAnswer || "No Answer";
+        if (question.questionType === "fillInTheBlank") {
+          isCorrect = question.correctAnswers.some((correctAnswer: string) =>
+            userAnswer.toLowerCase() === correctAnswer.toLowerCase());
+        } else {
+          isCorrect = userAnswerObj?.correct || false;
+        }
         if (isCorrect) {
           currentTotalScore += question.points;
         }
@@ -63,7 +68,10 @@ export default function QuizResults() {
             </div>
             <div>
               <strong>Correct Answer: </strong>
-              {question.correctAnswer}
+              {question.questionType === "fillInTheBlank"
+                ? question.correctAnswers.join(", ")
+                : question.correctAnswer
+              }
             </div>
           </div>
         );

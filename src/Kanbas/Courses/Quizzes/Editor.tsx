@@ -146,7 +146,7 @@ export default function QuizzesEditor() {
           <div className="col">
             <select id="wd-show-answers" className="form-select"
               value={quiz?.showAnswers} onChange={(e) => handleInputChange("showAnswers", e.target.value)}>
-              <option value="never">Never</option> <option value="immediately">Immediately</option>
+              <option value="immediately">Immediately</option> <option value="never">Never</option>
             </select>
           </div>
         </div>
