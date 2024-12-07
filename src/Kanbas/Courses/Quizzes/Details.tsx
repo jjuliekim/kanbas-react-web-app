@@ -2,10 +2,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import * as coursesClient from "../client";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import * as attemptClient from "./attemptClient"
 
 export default function QuizDetails() {
   const { cid, qid } = useParams();
   const [quiz, setQuiz] = useState<any>(null);
+  const [attempt, setAttempt] = useState<number>(0);
   const navigate = useNavigate();
   const { currentUser } = useSelector((state: any) => state.accountReducer);
 
@@ -15,9 +17,15 @@ export default function QuizDetails() {
       const foundQuiz = quizzes.find((quiz: any) => quiz._id === qid);
       setQuiz(foundQuiz);
     };
+    const fetchAttempts = async () => {
+      const attemptData = await attemptClient.findAttemptForUserQuiz(qid as string, currentUser._id);
+      setAttempt(attemptData?.attemptNumber || 0);
+    }
 
     fetchQuizDetails();
-  }, [cid, qid]);
+    fetchAttempts();
+  }, [cid, qid, currentUser._id]);
+  const maxAttemptsReached = quiz?.attemptsAllowed !== undefined && attempt >= quiz.attemptsAllowed;
 
   const handleEdit = () => {
     navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/edit`);
@@ -38,7 +46,16 @@ export default function QuizDetails() {
       <hr />
       {currentUser.role === "STUDENT" ? (
         <div className="text-center mt-4">
-          <button className="btn btn-danger" onClick={handlePreview}>Start Quiz</button>
+          {maxAttemptsReached ? (<>
+            <button className="btn btn-secondary" disabled>
+              Start Quiz
+            </button>
+            <div className="my-3">Maximum Number of Attempts Reached</div>
+          </>) : (
+            <button className="btn btn-danger" onClick={handlePreview}>
+              Start Quiz
+            </button>
+          )}
         </div>
       ) : (<>
         <div className="row mb-2">

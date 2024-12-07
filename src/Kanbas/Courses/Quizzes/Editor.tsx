@@ -262,7 +262,7 @@ export default function QuizzesEditor() {
         const questions = await questionClient.findQuestionsForQuiz(qid);
         setQuestions(questions);
         setOriginalQuestions(questions);
-        setEditMode(questions.map(() => false));
+        setEditMode(questions.map(() => true));
       };
       fetchQuestions();
     }, [qid]);
@@ -271,6 +271,7 @@ export default function QuizzesEditor() {
       const newQuestion = { questionType: "multipleChoice", choices: [""], correctAnswer: "" };
       setQuestions([...questions, newQuestion]);
       setOriginalQuestions([...originalQuestions, newQuestion]);
+      setEditMode([...editMode, true]);
     };
 
     const handleSaveQuestion = async (index: number, question: any) => {
@@ -305,7 +306,7 @@ export default function QuizzesEditor() {
     }
 
     const toggleEditMode = (index: number) => {
-      setEditMode((prev) => prev.map((v, i) => (i === index ? !v : v)));
+      setEditMode((prev) => prev.map((mode, i) => (i === index ? !mode : mode)));
     };
 
     const totalPoints = questions.reduce((sum, question) => sum + (question.points || 0), 0);
@@ -428,9 +429,7 @@ export default function QuizzesEditor() {
                   <div>
                     <strong>Question:</strong> {question.questionText || ""}
                   </div>
-                  <FaPencil className="text-danger" onClick={() => toggleEditMode(index)}>
-                    Edit
-                  </FaPencil>
+                  <FaPencil className="text-danger" onClick={() => toggleEditMode(index)} />
                 </div>
 
                 <div>
