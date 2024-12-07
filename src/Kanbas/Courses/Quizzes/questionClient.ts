@@ -26,3 +26,8 @@ export const deleteQuestion = async (quizId: string, questionId: string) => {
   const response = await axiosWithCredentials.delete(`${QUESTIONS_API}/${quizId}/${questionId}`);
   return response.data;
 };
+
+export const findQuizById = async (quizId: string) => {
+  const response = await axiosWithCredentials.get(`${QUESTIONS_API}/${quizId}`);
+  return response.data;
+};

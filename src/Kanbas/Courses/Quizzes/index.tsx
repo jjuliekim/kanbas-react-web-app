@@ -10,27 +10,31 @@ import * as quizzesClient from "./client";
 import { useEffect, useState } from "react";
 import { GrClear } from "react-icons/gr";
 import * as questionClient from "./questionClient";
+import * as attemptClient from "./attemptClient";
 
 export default function Quizzes() {
   const { cid } = useParams();
   const navigate = useNavigate();
   const [quizzes, setQuizzes] = useState<Array<{
-    _id: string;
-    title: string;
-    dueDate: string;
-    availableFrom: string;
-    availableUntil: string;
-    points: number;
-    numQuestions: number;
-    published: boolean;
+    _id: string; title: string; dueDate: string;
+    availableFrom: string; availableUntil: string;
+    points: number; numQuestions: number; published: boolean;
   }>>([]);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const [scores, setScores] = useState<{ [quizId: string]: string }>({});
 
   const fetchQuizzes = async () => {
     const quizzes = await coursesClient.findQuizzesForCourse(cid as string);
     for (const quiz of quizzes) {
       const questions = await questionClient.findQuestionsForQuiz(quiz._id);
       quiz.numQuestions = questions.length;
+      if (currentUser.role === "STUDENT") {
+        const attempt = await attemptClient.findAttemptForUserQuiz(quiz._id, currentUser._id);
+        const score = attempt ? attempt.score : "--";
+        setScores(prevScores => ({ ...prevScores, [quiz._id]: score }));
+      } else {
+        setScores(prevScores => ({ ...prevScores, [quiz._id]: "--" }));
+      }
     }
     setQuizzes(quizzes);
   };
@@ -82,8 +86,7 @@ export default function Quizzes() {
           <div className="col-auto ms-auto">
             <button id="wd-add-quiz" className="btn btn-lg btn-danger me-1 float-end"
               onClick={handleCreate}>
-              <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
-              Quiz
+              + Quiz
             </button>
           </div>
         )}
@@ -109,23 +112,13 @@ export default function Quizzes() {
                 availabilityText = "Available";
               } else {
                 const formattedAvailableFromDate = availableFromDate.toLocaleString("en-US", {
-                  month: "long",
-                  day: "numeric",
-                  hour: "numeric",
-                  minute: "numeric",
-                  hour12: true,
+                  month: "long", day: "numeric", hour: "numeric", minute: "numeric", hour12: true,
                 });
                 availabilityText = `Not available until ${formattedAvailableFromDate}`;
               }
-              const formattedDueDate = dueDate
-                ? dueDate.toLocaleString("en-US", {
-                  month: "long",
-                  day: "numeric",
-                  hour: "numeric",
-                  minute: "numeric",
-                  hour12: true,
-                })
-                : "N/A";
+              const formattedDueDate = dueDate ? dueDate.toLocaleString("en-US", {
+                month: "long", day: "numeric", hour: "numeric", minute: "numeric", hour12: true,
+              }) : "N/A";
               return (
                 <li className="wd-quiz list-group-item p-3 ps-1 d-flex align-items-center" key={quiz._id}>
                   <MdOutlineRocketLaunch color="green" className="me-3 ms-2" />
@@ -135,9 +128,9 @@ export default function Quizzes() {
                       {quiz.title}
                     </a>
                     <div className="text-muted small">
-                      <strong> {availabilityText} </strong> | {" "} 
+                      <strong> {availabilityText} </strong> | {" "}
                       <strong> Due</strong> {formattedDueDate} | {quiz.points} pts | {quiz.numQuestions} Questions |
-                      {/* Recent Score: {quiz.scores?.get(currentUser._id) || "N/A"} */}
+                      Last Attempt: {scores[quiz._id]}/{quiz.points}
                     </div>
                   </div>
                   {currentUser.role === "FACULTY" && (

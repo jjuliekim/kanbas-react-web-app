@@ -92,10 +92,8 @@ export default function QuizzesEditor() {
           <div className="col">
             <select id="wd-quiz-type" className="form-select"
               value={quiz?.quizType} onChange={(e) => handleInputChange("quizType", e.target.value)}>
-              <option value="Graded Quiz">Graded Quiz</option>
-              <option value="Practice Quiz">Practice Quiz</option>
-              <option value="Graded Survey">Graded Survey</option>
-              <option value="Ungraded Survey">Ungraded Survey</option>
+              <option value="Graded Quiz">Graded Quiz</option> <option value="Practice Quiz">Practice Quiz</option>
+              <option value="Graded Survey">Graded Survey</option> <option value="Ungraded Survey">Ungraded Survey</option>
             </select>
           </div>
         </div>
@@ -106,10 +104,8 @@ export default function QuizzesEditor() {
           <div className="col">
             <select id="wd-group" className="form-select"
               value={quiz?.assignmentGroup} onChange={(e) => handleInputChange("assignmentGroup", e.target.value)}>
-              <option value="QUIZZES">QUIZZES</option>
-              <option value="EXAMS">EXAMS</option>
-              <option value="ASSIGNMENTS">ASSIGNMENTS</option>
-              <option value="PROJECT">PROJECT</option>
+              <option value="QUIZZES">QUIZZES</option> <option value="EXAMS">EXAMS</option>
+              <option value="ASSIGNMENTS">ASSIGNMENTS</option> <option value="PROJECT">PROJECT</option>
             </select>
           </div>
         </div>
@@ -150,8 +146,7 @@ export default function QuizzesEditor() {
           <div className="col">
             <select id="wd-show-answers" className="form-select"
               value={quiz?.showAnswers} onChange={(e) => handleInputChange("showAnswers", e.target.value)}>
-              <option value="never">Never</option>
-              <option value="immediately">Immediately</option>
+              <option value="never">Never</option> <option value="immediately">Immediately</option>
             </select>
           </div>
         </div>
@@ -327,156 +322,147 @@ export default function QuizzesEditor() {
         <div>
           {questions.map((question, index) => (
             <div key={index} className="mb-5 border p-3">
-              {editMode[index] ? (
-                <>
-                  <div className="d-flex justify-content-between align-items-center mb-3">
-                    <div>
-                      <strong>Question Type</strong>
-                      <select className="dropdown form-select" value={question.questionType || "multipleChoice"}
-                        onChange={(e) => updateQuestion(index, {
-                          questionType: e.target.value, choices: [], correctAnswer: "", correctAnswers: [],
-                        })}>
-                        <option value="multipleChoice">Multiple Choice</option>
-                        <option value="trueFalse">True/False</option>
-                        <option value="fillInTheBlank">Fill in the Blank</option>
-                      </select>
-                    </div>
-                    <button className="btn btn-danger"
-                      onClick={() => handleRemoveQuestion(index)}>
-                      Delete Question
+              {editMode[index] ? (<>
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                  <div>
+                    <strong>Question Type</strong>
+                    <select className="dropdown form-select" value={question.questionType || "multipleChoice"}
+                      onChange={(e) => updateQuestion(index, {
+                        questionType: e.target.value, choices: [], correctAnswer: "", correctAnswers: [],
+                      })}>
+                      <option value="multipleChoice">Multiple Choice</option>
+                      <option value="trueFalse">True/False</option>
+                      <option value="fillInTheBlank">Fill in the Blank</option>
+                    </select>
+                  </div>
+                  <button className="btn btn-danger" onClick={() => handleRemoveQuestion(index)}>
+                    Delete Question
+                  </button>
+                </div>
+
+                <div>
+                  <strong>Question Text</strong>
+                  <input type="text" className="form-control" value={question.questionText || ""}
+                    onChange={(e) => updateQuestion(index, { questionText: e.target.value })} />
+                </div>
+                <div>
+                  <strong>Points</strong>
+                  <input type="number" className="form-control" value={question.points || 0}
+                    onChange={(e) => updateQuestion(index, { points: parseInt(e.target.value, 10) || 0 })} />
+                </div>
+
+                {question.questionType === "multipleChoice" && (
+                  <div>
+                    <strong>Answers</strong>
+                    {question.choices.map((choice: any, choiceIndex: Key | null | undefined) => (
+                      <div key={choiceIndex} className="d-flex align-items-center mb-2">
+                        <input type="radio" name={`correct-answer-${index}`} checked={question.correctAnswer === choice}
+                          onChange={() => updateQuestion(index, { correctAnswer: choice })} />
+                        <input type="text" className="form-control mx-2" value={choice || ""}
+                          onChange={(e) => updateQuestion(index, {
+                            choices: question.choices.map((c: any, ci: any) =>
+                              ci === choiceIndex ? e.target.value : c),
+                          })} />
+                        <FaTrash className="text-danger"
+                          onClick={() => updateQuestion(index, {
+                            choices: question.choices.filter((_: any, ci: any) => ci !== choiceIndex),
+                          })}>
+                        </FaTrash>
+                      </div>
+                    ))}
+                    <button className="btn btn-secondary mt-2 ms-2"
+                      onClick={() => updateQuestion(index, { choices: [...question.choices, ""] })}>
+                      Add Choice
                     </button>
                   </div>
+                )}
 
+                {question.questionType === "trueFalse" && (
                   <div>
-                    <strong>Question Text</strong>
-                    <input type="text" className="form-control" value={question.questionText || ""}
-                      onChange={(e) => updateQuestion(index, { questionText: e.target.value })} />
-                  </div>
-
-                  <div>
-                    <strong>Points</strong>
-                    <input type="number" className="form-control" value={question.points || 0}
-                      onChange={(e) => updateQuestion(index, { points: parseInt(e.target.value, 10) || 0 })} />
-                  </div>
-
-                  {question.questionType === "multipleChoice" && (
-                    <div>
-                      <strong>Answers</strong>
-                      {question.choices.map((choice: any, choiceIndex: Key | null | undefined) => (
-                        <div key={choiceIndex} className="d-flex align-items-center mb-2">
-                          <input type="radio" name={`correct-answer-${index}`} checked={question.correctAnswer === choice}
-                            onChange={() => updateQuestion(index, { correctAnswer: choice })} />
-                          <input type="text" className="form-control mx-2" value={choice || ""}
-                            onChange={(e) => updateQuestion(index, {
-                              choices: question.choices.map((c: any, ci: any) =>
-                                ci === choiceIndex ? e.target.value : c
-                              ),
-                            })} />
-                          <FaTrash className="text-danger"
-                            onClick={() => updateQuestion(index, {
-                              choices: question.choices.filter((_: any, ci: any) => ci !== choiceIndex),
-                            })}>
-                          </FaTrash>
-                        </div>
-                      ))}
-                      <button className="btn btn-secondary mt-2 ms-2"
-                        onClick={() => updateQuestion(index, { choices: [...question.choices, ""] })}>
-                        Add Choice
-                      </button>
+                    <strong>Correct Answer</strong>
+                    <div className="form-check">
+                      <input type="radio" className="form-check-input" name={`true-false-${index}`} checked={question.correctAnswer === "true"}
+                        onChange={() => updateQuestion(index, { correctAnswer: "true" })} />
+                      <label className="form-check-label">True</label>
                     </div>
-                  )}
+                    <div className="form-check">
+                      <input type="radio" className="form-check-input" name={`true-false-${index}`} checked={question.correctAnswer === "false"}
+                        onChange={() => updateQuestion(index, { correctAnswer: "false" })} />
+                      <label className="form-check-label">False</label>
+                    </div>
+                  </div>
+                )}
 
-                  {question.questionType === "trueFalse" && (
-                    <div>
-                      <strong>Correct Answer</strong>
-                      <div className="form-check">
-                        <input type="radio" className="form-check-input" name={`true-false-${index}`} checked={question.correctAnswer === "true"}
-                          onChange={() => updateQuestion(index, { correctAnswer: "true" })} />
-                        <label className="form-check-label">True</label>
+                {question.questionType === "fillInTheBlank" && (
+                  <div>
+                    <strong>Correct Answers</strong>
+                    {question.correctAnswers.map((answer: any, answerIndex: Key | null | undefined) => (
+                      <div key={answerIndex} className="d-flex align-items-center mb-2">
+                        <input type="text" className="form-control" value={answer || ""}
+                          onChange={(e) => updateQuestion(index, {
+                            correctAnswers: question.correctAnswers.map((a: any, ai: any) =>
+                              ai === answerIndex ? e.target.value : a),
+                          })} />
+                        <FaTrash className="text-danger ms-2"
+                          onClick={() => updateQuestion(index, {
+                            correctAnswers: question.correctAnswers.filter(
+                              (_: any, ai: Key | null | undefined) => ai !== answerIndex),
+                          })}>
+                        </FaTrash>
                       </div>
-                      <div className="form-check">
-                        <input type="radio" className="form-check-input" name={`true-false-${index}`} checked={question.correctAnswer === "false"}
-                          onChange={() => updateQuestion(index, { correctAnswer: "false" })} />
-                        <label className="form-check-label">False</label>
-                      </div>
-                    </div>
-                  )}
-
-                  {question.questionType === "fillInTheBlank" && (
-                    <div>
-                      <strong>Correct Answers</strong>
-                      {question.correctAnswers.map((answer: any, answerIndex: Key | null | undefined) => (
-                        <div key={answerIndex} className="d-flex align-items-center mb-2">
-                          <input type="text" className="form-control" value={answer || ""}
-                            onChange={(e) => updateQuestion(index, {
-                              correctAnswers: question.correctAnswers.map((a: any, ai: any) =>
-                                ai === answerIndex ? e.target.value : a
-                              ),
-                            })} />
-                          <FaTrash className="text-danger ms-2"
-                            onClick={() => updateQuestion(index, {
-                              correctAnswers: question.correctAnswers.filter(
-                                (_: any, ai: Key | null | undefined) => ai !== answerIndex
-                              ),
-                            })}>
-                          </FaTrash>
-                        </div>
-                      ))}
-                      <button className="btn btn-secondary mt-2 ms-2"
-                        onClick={() => updateQuestion(index, { correctAnswers: [...question.correctAnswers, ""] })} >
-                        Add Answer
-                      </button>
-                    </div>
-                  )}
-                  <button className="btn btn-danger mt-3" onClick={() => handleSaveQuestion(index, question)}>
-                    Save Question
-                  </button>
-                  <button className="btn btn-secondary mt-3 ms-2" onClick={() => handleCancelEdit(index)}>
-                    Cancel Edits
-                  </button>
-                </>
-              ) : (
-                <>
-                  <div className="d-flex justify-content-between align-items-center">
-                    <div>
-                      <strong>Question:</strong> {question.questionText || ""}
-                    </div>
-                    <FaPencil className="text-danger" onClick={() => toggleEditMode(index)}>
-                      Edit
-                    </FaPencil>
+                    ))}
+                    <button className="btn btn-secondary mt-2 ms-2"
+                      onClick={() => updateQuestion(index, { correctAnswers: [...question.correctAnswers, ""] })} >
+                      Add Answer
+                    </button>
                   </div>
-
+                )}
+                <button className="btn btn-danger mt-3" onClick={() => handleSaveQuestion(index, question)}>
+                  Save Question
+                </button>
+                <button className="btn btn-secondary mt-3 ms-2" onClick={() => handleCancelEdit(index)}>
+                  Cancel Edits
+                </button>
+              </>) : (<>
+                <div className="d-flex justify-content-between align-items-center">
                   <div>
-                    <strong>Points:</strong> {question.points || 0}
+                    <strong>Question:</strong> {question.questionText || ""}
                   </div>
-                  {question.questionType === "multipleChoice" && (
-                    <div>
-                      <strong>Correct Answer:</strong> {question.correctAnswer || "N/A"} <br />
-                      <strong>Choices:</strong>
-                      <ul>
-                        {question.choices.map((choice: any, choiceIndex: number) => (
-                          <li key={choiceIndex}>{choice || "N/A"}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                  {question.questionType === "trueFalse" && (
-                    <div>
-                      <strong>Correct Answer:</strong> {question.correctAnswer || "N/A"}
-                    </div>
-                  )}
-                  {question.questionType === "fillInTheBlank" && (
-                    <div>
-                      <strong>Correct Answers:</strong>
-                      <ul>
-                        {question.correctAnswers.map((answer: any, answerIndex: number) => (
-                          <li key={answerIndex}>{answer || "N/A"}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </>
-              )}
+                  <FaPencil className="text-danger" onClick={() => toggleEditMode(index)}>
+                    Edit
+                  </FaPencil>
+                </div>
+
+                <div>
+                  <strong>Points:</strong> {question.points || 0}
+                </div>
+                {question.questionType === "multipleChoice" && (
+                  <div>
+                    <strong>Correct Answer:</strong> {question.correctAnswer || "N/A"} <br />
+                    <strong>Choices:</strong>
+                    <ul>
+                      {question.choices.map((choice: any, choiceIndex: number) => (
+                        <li key={choiceIndex}>{choice || "N/A"}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {question.questionType === "trueFalse" && (
+                  <div>
+                    <strong>Correct Answer:</strong> {question.correctAnswer || "N/A"}
+                  </div>
+                )}
+                {question.questionType === "fillInTheBlank" && (
+                  <div>
+                    <strong>Correct Answers:</strong>
+                    <ul>
+                      {question.correctAnswers.map((answer: any, answerIndex: number) => (
+                        <li key={answerIndex}>{answer || "N/A"}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </>)}
             </div>
           ))}
           <hr className="mt-5" />
@@ -512,7 +498,6 @@ export default function QuizzesEditor() {
           </li>
         </ul>
       </div>
-
       {activeTab === "details" && detailsTab()}
       {activeTab === "questions" && <QuestionsTab />}
     </div>
