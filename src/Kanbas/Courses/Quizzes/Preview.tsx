@@ -56,7 +56,7 @@ export default function QuizPreview() {
       <hr />
       {questions.map((question, index) => (
         <div key={question._id || index} className="my-4 border p-2">
-          <h5>Question #{index + 1}:</h5>
+          <h5>{question.title || "Question #" + (index + 1)}</h5>
           <p>{question.questionText}</p>
 
           {question.questionType === "multipleChoice" && (

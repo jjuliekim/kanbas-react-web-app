@@ -35,6 +35,10 @@ export default function QuizDetails() {
     navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/preview`);
   };
 
+  const handleResults = () => {
+    navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/results`);
+  };
+
   const formatDate = (date: string) => {
     return new Date(date).toLocaleString();
   };
@@ -47,10 +51,10 @@ export default function QuizDetails() {
       {currentUser.role === "STUDENT" ? (
         <div className="text-center mt-4">
           {maxAttemptsReached ? (<>
-            <button className="btn btn-secondary" disabled>
-              Start Quiz
-            </button>
             <div className="my-3">Maximum Number of Attempts Reached</div>
+            <button className="btn btn-secondary" onClick={handleResults}>
+              Results of Last Attempt
+            </button>
           </>) : (
             <button className="btn btn-danger" onClick={handlePreview}>
               Start Quiz

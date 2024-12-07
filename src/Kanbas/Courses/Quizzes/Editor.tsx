@@ -46,11 +46,12 @@ export default function QuizzesEditor() {
   const handleSave = async () => {
     const quizData = { ...quiz };
     if (qid === "new") {
-      await coursesClient.createQuizForCourse(cid as string, quizData);
+      const newQuiz = await coursesClient.createQuizForCourse(cid as string, quizData);
+      navigate(`/Kanbas/Courses/${cid}/Quizzes/${newQuiz._id}`);
     } else {
       await quizzesClient.updateQuiz({ ...quizData, _id: qid });
+      navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}`);
     }
-    navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}`);
   };
 
   const handleSaveAndPublish = async () => {
@@ -342,6 +343,11 @@ export default function QuizzesEditor() {
                 </div>
 
                 <div>
+                  <strong>Title</strong>
+                  <input type="text" className="form-control" value={question.title || ""}
+                    onChange={(e) => updateQuestion(index, { title: e.target.value })} />
+                </div>
+                <div>
                   <strong>Question Text</strong>
                   <input type="text" className="form-control" value={question.questionText || ""}
                     onChange={(e) => updateQuestion(index, { questionText: e.target.value })} />
@@ -427,14 +433,12 @@ export default function QuizzesEditor() {
               </>) : (<>
                 <div className="d-flex justify-content-between align-items-center">
                   <div>
-                    <strong>Question:</strong> {question.questionText || ""}
+                    <strong>Title:</strong> {question.title || ""}
                   </div>
                   <FaPencil className="text-danger" onClick={() => toggleEditMode(index)} />
                 </div>
-
-                <div>
-                  <strong>Points:</strong> {question.points || 0}
-                </div>
+                <strong>Question:</strong> {question.questionText || ""} <br />
+                <strong>Points:</strong> {question.points || 0}
                 {question.questionType === "multipleChoice" && (
                   <div>
                     <strong>Correct Answer:</strong> {question.correctAnswer || "N/A"} <br />

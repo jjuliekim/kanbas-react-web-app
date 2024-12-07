@@ -136,10 +136,8 @@ export default function Quizzes() {
                   {currentUser.role === "FACULTY" && (
                     <div className="ms-auto">
                       {quiz.published ? <GreenCheckmark /> : <GrClear />}
-                      <button
-                        className="btn btn-link p-0"
-                        onClick={() => toggleDropdown(quiz._id)}
-                        style={{ color: 'black' }}>
+                      <button className="btn btn-link p-2"
+                        onClick={() => toggleDropdown(quiz._id)} style={{ color: 'black' }}>
                         <IoEllipsisVertical />
                       </button>
                       <div id={`dropdown-menu-${quiz._id}`}

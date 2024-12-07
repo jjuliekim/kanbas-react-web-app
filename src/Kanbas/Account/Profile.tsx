@@ -21,8 +21,8 @@ export default function Profile() {
     navigate("/Kanbas/Account/Signin");
   };
 
-  useEffect(() => { 
-    fetchProfile(); 
+  useEffect(() => {
+    fetchProfile();
   }, []);
 
   const updateProfile = async () => {
@@ -47,12 +47,12 @@ export default function Profile() {
             onChange={(e) => setProfile({ ...profile, dob: e.target.value })} type="date" />
           <input defaultValue={profile.email || ""} placeholder="Email" id="wd-email" className="form-control mb-2"
             onChange={(e) => setProfile({ ...profile, email: e.target.value })} />
-          <select onChange={(e) => setProfile({ ...profile, role: e.target.value })}
-            className="form-select mb-2" id="wd-role">
+          <select value={profile.role || ""} onChange={(e) => setProfile({ ...profile, role: e.target.value })} className="form-select mb-2">
             <option value="" disabled>Select Role</option>
-            <option value="USER">User</option>            <option value="ADMIN">Admin</option>
-            <option value="FACULTY">Faculty</option>      <option value="STUDENT">Student</option>
+            <option value="USER">User</option> <option value="ADMIN">Admin</option>
+            <option value="FACULTY">Faculty</option> <option value="STUDENT">Student</option>
           </select>
+
           <button onClick={updateProfile} className="btn btn-primary w-100 mb-2"> Update </button>
           <button onClick={signout} className="btn btn-danger w-100 mb-2" id="wd-signout-btn">Sign out</button>
         </div>

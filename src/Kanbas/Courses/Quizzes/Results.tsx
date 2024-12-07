@@ -57,7 +57,7 @@ export default function QuizResults() {
           <div key={question._id || index} className="my-4 border p-2">
             <div className={`d-flex align-items-center ${isCorrect ? "text-success" : "text-danger"}`}>
               {isCorrect ? <FaCheck className="me-2" /> : <FaTimes className="me-2" />}
-              <h5 className="mb-0">Question #{index + 1}:</h5>
+              <h5 className="mb-0">{question.title || "Question #" + (index + 1)}</h5>
               <span className="ms-auto">{question.points} Points</span>
             </div>
 
